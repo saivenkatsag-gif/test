@@ -2402,7 +2402,8 @@ function applyHeroBanner(v) {
   const urg = document.querySelector('.hero-urgency');
   if (urg) { if(v.urgency_text) urg.textContent = v.urgency_text; urg.style.display = v.urgency_show ? 'inline-flex':'none'; if(v.urg_color) urg.style.background=v.urg_color; }
   const hero = document.querySelector('.hero');
-  if (hero && v.hero_height) hero.style.minHeight = v.hero_height;
+  if (hero && v.hero_height && window.innerWidth > 768) hero.style.minHeight = v.hero_height;
+  if (hero && window.innerWidth <= 768) { hero.style.minHeight = '0'; hero.style.height = '180px'; hero.style.maxHeight = '180px'; }
   // Rebuild feature icons from banner data (or keep empty)
   const feats = document.querySelector('.hero-features');
   if (feats && v.features && v.features.length) {
@@ -3280,12 +3281,14 @@ window.addEventListener('scroll',()=>{
 (function pinBottomNav(){
   const nav = document.getElementById('mobBottomNav');
   if(!nav) return;
-  // Move to direct child of <body> so no parent stacking context traps position:fixed
-  if(nav.parentElement !== document.body) {
-    document.body.appendChild(nav);
+  // Always move to direct body child — breaks any stacking context from ancestors
+  if(nav.parentElement !== document.body) document.body.appendChild(nav);
+  // Show/hide only — never override position/bottom/z-index inline styles
+  function syncDisplay(){
+    nav.style.display = window.innerWidth <= 768 ? 'flex' : 'none';
   }
-  // Remove any inline style overrides — let CSS media query handle display/positioning
-  nav.removeAttribute('style');
+  syncDisplay();
+  window.addEventListener('resize', syncDisplay);
 })();
 
 // ─── HANDLE SUPABASE AUTH REDIRECT (email confirmation, Google OAuth, magic link) ───
@@ -3366,7 +3369,7 @@ async function handleAuthRedirect() {
 </script>
 
 <!-- MOBILE BOTTOM NAV BAR -->
-<nav class="mob-bottom-nav" id="mobBottomNav" aria-label="Bottom navigation">
+<nav class="mob-bottom-nav" id="mobBottomNav" aria-label="Bottom navigation" style="position:fixed;bottom:0;left:0;right:0;width:100%;z-index:99999;background:#fff;border-top:1.5px solid #e0e0e0;box-shadow:0 -2px 16px rgba(0,0,0,.13);display:none;flex-direction:column;min-height:60px;">
   <div class="mob-bottom-nav-inner">
 
     <!-- Home -->
