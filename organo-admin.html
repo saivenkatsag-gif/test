@@ -1,0 +1,2714 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Organo — Admin Dashboard</title>
+<link href="https://fonts.googleapis.com/css2?family=Playfair+Display:wght@400;600;700;900&family=DM+Sans:ital,opsz,wght@0,9..40,300;0,9..40,400;0,9..40,500;0,9..40,600;1,9..40,400&display=swap" rel="stylesheet">
+<style>
+:root {
+  --p: #F97316; --p-light: #FDBA74; --p-pale: #FFF7ED; --p-dark: #C2410C;
+  --g: #3D7A1F; --g-light: #BBF7D0; --g-pale: #F0FDF4;
+  --earth: #92400E; --earth-l: #FEF3C7;
+  --cream: #FFFCF7; --white: #fff;
+  --g100: #F9F8F5; --g200: #EEE9E0; --g300: #D6CEC0; --g500: #8C8070; --g700: #4A4035; --g900: #1A1209;
+  --r: 14px; --rs: 8px; --rl: 22px;
+  --sh: 0 2px 12px rgba(0,0,0,.06); --sh2: 0 8px 40px rgba(0,0,0,.10);
+  --sidebar: 268px;
+  --admin: #7C3AED; --admin-light: #EDE9FE; --admin-pale: #F5F3FF;
+}
+*{margin:0;padding:0;box-sizing:border-box;}
+html{scroll-behavior:smooth;}
+body{font-family:'DM Sans',sans-serif;background:var(--g100);color:var(--g900);overflow-x:hidden;}
+h1,h2,h3,.serif{font-family:'Playfair Display',serif;}
+a{text-decoration:none;color:inherit;}
+img{display:block;max-width:100%;}
+button{cursor:pointer;font-family:'DM Sans',sans-serif;}
+
+/* ─── BUTTONS ─── */
+.btn{display:inline-flex;align-items:center;gap:6px;padding:9px 20px;border-radius:40px;font-size:13.5px;font-weight:600;border:none;transition:all .2s;}
+.btn-ghost{background:transparent;border:1.5px solid var(--g200);color:var(--g700);}
+.btn-ghost:hover{border-color:var(--p);color:var(--p);}
+.btn-primary{background:var(--p);color:#fff;}
+.btn-primary:hover{background:var(--p-dark);transform:translateY(-1px);}
+.btn-green{background:var(--g);color:#fff;}
+.btn-green:hover{background:#2d5a14;}
+.btn-admin{background:var(--admin);color:#fff;}
+.btn-admin:hover{background:#6d28d9;}
+.btn-danger{background:#FEE2E2;color:#DC2626;border:none;}
+.btn-danger:hover{background:#FECACA;}
+.btn-warn{background:#FEF3C7;color:#D97706;border:none;}
+.btn-warn:hover{background:#FDE68A;}
+.btn-sm{padding:6px 14px;font-size:12px;}
+
+/* ─── LAYOUT ─── */
+.layout{display:flex;min-height:100vh;}
+
+/* ─── SIDEBAR ─── */
+.sidebar{
+  width:var(--sidebar);flex-shrink:0;
+  background:var(--g900);
+  display:flex;flex-direction:column;
+  position:fixed;top:0;left:0;bottom:0;z-index:100;
+  transition:transform .3s;
+}
+.sidebar-logo{
+  padding:26px 24px 18px;
+  display:flex;align-items:center;justify-content:space-between;
+  border-bottom:1px solid rgba(255,255,255,.08);
+}
+.logo-text{font-family:'Playfair Display',serif;font-size:26px;font-weight:900;color:var(--p);letter-spacing:-.5px;}
+.logo-text span{color:var(--g-light);}
+.admin-badge-logo{background:var(--admin);color:#fff;font-size:10px;font-weight:800;padding:3px 9px;border-radius:20px;letter-spacing:.5px;text-transform:uppercase;}
+
+.sidebar-user{
+  padding:18px 24px;display:flex;gap:12px;align-items:center;
+  border-bottom:1px solid rgba(255,255,255,.08);
+}
+.s-avatar{
+  width:44px;height:44px;border-radius:50%;
+  background:linear-gradient(135deg,var(--admin),#9333EA);
+  display:flex;align-items:center;justify-content:center;
+  font-size:17px;font-weight:700;color:#fff;flex-shrink:0;
+}
+.s-user-info h5{font-size:14px;font-weight:700;color:#fff;margin-bottom:2px;}
+.s-user-info p{font-size:11.5px;color:rgba(255,255,255,.45);}
+.s-online{display:inline-flex;align-items:center;gap:5px;font-size:11px;color:var(--g-light);margin-top:3px;}
+.s-online::before{content:'';width:6px;height:6px;background:var(--g-light);border-radius:50%;display:block;}
+
+.sidebar-nav{flex:1;padding:14px 0;overflow-y:auto;}
+.sidebar-nav::-webkit-scrollbar{width:0;}
+.nav-section-label{padding:10px 24px 4px;font-size:10px;font-weight:700;color:rgba(255,255,255,.22);letter-spacing:1.2px;text-transform:uppercase;}
+.nav-item{
+  display:flex;align-items:center;gap:12px;
+  padding:11px 24px;font-size:13.5px;font-weight:500;
+  color:rgba(255,255,255,.55);cursor:pointer;transition:all .2s;position:relative;
+}
+.nav-item:hover{color:#fff;background:rgba(255,255,255,.06);}
+.nav-item.active{color:#fff;background:rgba(249,115,22,.18);}
+.nav-item.active::before{content:'';position:absolute;left:0;top:0;bottom:0;width:3px;background:var(--p);border-radius:0 3px 3px 0;}
+.nav-icon{width:20px;height:20px;opacity:.7;flex-shrink:0;}
+.nav-item.active .nav-icon,.nav-item:hover .nav-icon{opacity:1;}
+.nav-badge{margin-left:auto;background:var(--p);color:#fff;font-size:11px;font-weight:700;padding:2px 8px;border-radius:20px;min-width:22px;text-align:center;}
+.nav-badge.purple{background:var(--admin);}
+.nav-badge.green{background:var(--g);}
+
+.sidebar-bottom{padding:20px 24px;border-top:1px solid rgba(255,255,255,.08);}
+.sidebar-bottom .nav-item{padding:10px 0;border-radius:var(--rs);}
+
+/* ─── TOPBAR ─── */
+.main{margin-left:var(--sidebar);display:flex;flex-direction:column;min-height:100vh;}
+.topbar{
+  position:sticky;top:0;z-index:50;
+  background:rgba(249,248,245,.92);backdrop-filter:blur(18px);
+  border-bottom:1px solid var(--g200);
+  padding:0 36px;height:64px;
+  display:flex;align-items:center;gap:20px;
+}
+.topbar-title{font-family:'Playfair Display',serif;font-size:20px;font-weight:700;color:var(--g900);}
+.topbar-title span{color:var(--p);font-size:13px;font-family:'DM Sans',sans-serif;font-weight:600;background:var(--p-pale);padding:2px 10px;border-radius:20px;margin-left:10px;vertical-align:middle;}
+.topbar-right{margin-left:auto;display:flex;align-items:center;gap:14px;}
+.search-bar{position:relative;}
+.search-bar input{padding:8px 16px 8px 38px;border:1.5px solid var(--g200);border-radius:40px;font-size:13px;font-family:'DM Sans',sans-serif;background:#fff;outline:none;width:240px;transition:border-color .2s;}
+.search-bar input:focus{border-color:var(--p-light);}
+.search-bar svg{position:absolute;left:12px;top:50%;transform:translateY(-50%);opacity:.4;}
+.topbar-icon{width:38px;height:38px;border-radius:50%;border:1.5px solid var(--g200);background:#fff;display:flex;align-items:center;justify-content:center;cursor:pointer;transition:border-color .2s;position:relative;}
+.topbar-icon:hover{border-color:var(--p);}
+.notif-dot{position:absolute;top:2px;right:2px;width:9px;height:9px;background:var(--p);border-radius:50%;border:2px solid var(--g100);}
+
+/* ─── PAGE CONTENT ─── */
+.page{padding:32px 36px;flex:1;display:none;animation:fadeIn .3s ease;}
+.page.active{display:block;}
+@keyframes fadeIn{from{opacity:0;transform:translateY(8px)}to{opacity:1;transform:translateY(0)}}
+
+/* ─── STAT CARDS ─── */
+.stats-grid{display:grid;grid-template-columns:repeat(4,1fr);gap:18px;margin-bottom:28px;}
+.stat-card{
+  background:#fff;border-radius:var(--r);padding:24px;
+  box-shadow:var(--sh);position:relative;overflow:hidden;
+  transition:transform .2s,box-shadow .2s;
+}
+.stat-card:hover{transform:translateY(-2px);box-shadow:var(--sh2);}
+.stat-card::after{
+  content:'';position:absolute;top:-30px;right:-30px;
+  width:100px;height:100px;border-radius:50%;opacity:.06;
+}
+.stat-card.orange::after{background:var(--p);}
+.stat-card.green::after{background:var(--g);}
+.stat-card.purple::after{background:var(--admin);}
+.stat-card.earth::after{background:var(--earth);}
+.stat-icon{
+  width:46px;height:46px;border-radius:14px;
+  display:flex;align-items:center;justify-content:center;margin-bottom:16px;font-size:22px;
+}
+.stat-icon.orange{background:var(--p-pale);}
+.stat-icon.green{background:var(--g-pale);}
+.stat-icon.purple{background:var(--admin-pale);}
+.stat-icon.earth{background:var(--earth-l);}
+.stat-val{font-family:'Playfair Display',serif;font-size:30px;font-weight:700;color:var(--g900);line-height:1;}
+.stat-label{font-size:13px;color:var(--g500);margin-top:4px;font-weight:500;}
+.stat-change{display:inline-flex;align-items:center;gap:4px;font-size:12px;font-weight:600;margin-top:10px;padding:3px 10px;border-radius:20px;}
+.stat-change.up{background:#DCFCE7;color:#16A34A;}
+.stat-change.down{background:#FEE2E2;color:#DC2626;}
+
+/* ─── CHARTS ROW ─── */
+.charts-row{display:grid;grid-template-columns:2fr 1fr;gap:18px;margin-bottom:28px;}
+.chart-card{background:#fff;border-radius:var(--r);padding:26px;box-shadow:var(--sh);}
+.chart-head{display:flex;align-items:center;justify-content:space-between;margin-bottom:22px;}
+.chart-head h3{font-size:16px;font-weight:700;color:var(--g900);}
+.chart-tabs{display:flex;gap:4px;background:var(--g100);border-radius:40px;padding:4px;}
+.chart-tab{padding:5px 14px;border-radius:40px;font-size:12px;font-weight:600;color:var(--g500);cursor:pointer;transition:all .2s;border:none;background:transparent;}
+.chart-tab.active{background:#fff;color:var(--p);box-shadow:0 1px 6px rgba(0,0,0,.08);}
+.bar-chart{display:flex;align-items:flex-end;gap:10px;height:160px;}
+.bar-wrap{display:flex;flex-direction:column;align-items:center;gap:6px;flex:1;}
+.bar{border-radius:6px 6px 0 0;width:100%;transition:height .5s cubic-bezier(.34,1.56,.64,1);cursor:pointer;position:relative;}
+.bar:hover::after{content:attr(data-val);position:absolute;top:-28px;left:50%;transform:translateX(-50%);background:var(--g900);color:#fff;font-size:11px;padding:3px 8px;border-radius:6px;white-space:nowrap;font-family:'DM Sans',sans-serif;}
+.bar.orange{background:linear-gradient(180deg,var(--p),var(--p-dark));}
+.bar.green{background:linear-gradient(180deg,var(--g),#2d5a14);}
+.bar.purple{background:linear-gradient(180deg,var(--admin),#6d28d9);}
+.bar-label{font-size:11px;color:var(--g500);font-weight:500;}
+
+/* Donut */
+.donut-wrap{display:flex;flex-direction:column;align-items:center;gap:18px;}
+.donut{position:relative;width:150px;height:150px;}
+.donut svg{transform:rotate(-90deg);}
+.donut-center{position:absolute;top:50%;left:50%;transform:translate(-50%,-50%);text-align:center;}
+.donut-center strong{font-family:'Playfair Display',serif;font-size:24px;font-weight:700;color:var(--g900);display:block;}
+.donut-center span{font-size:11px;color:var(--g500);}
+.donut-legend{display:flex;flex-direction:column;gap:10px;width:100%;}
+.legend-item{display:flex;align-items:center;gap:10px;font-size:13px;}
+.legend-dot{width:10px;height:10px;border-radius:50%;flex-shrink:0;}
+.legend-label{color:var(--g500);flex:1;}
+.legend-val{font-weight:700;color:var(--g900);}
+
+/* ─── TWO-COL ─── */
+.two-col{display:grid;grid-template-columns:1fr 1fr;gap:18px;margin-bottom:28px;}
+.three-col{display:grid;grid-template-columns:1fr 1fr 1fr;gap:18px;margin-bottom:28px;}
+
+/* ─── TABLE CARD ─── */
+.table-card{background:#fff;border-radius:var(--r);box-shadow:var(--sh);overflow:hidden;}
+.table-head{padding:20px 24px;border-bottom:1px solid var(--g200);display:flex;align-items:center;justify-content:space-between;}
+.table-head h3{font-size:15px;font-weight:700;}
+.table-filters{display:flex;gap:8px;}
+.filter-btn{padding:5px 14px;border-radius:40px;font-size:12px;font-weight:600;border:1.5px solid var(--g200);background:transparent;color:var(--g500);cursor:pointer;transition:all .2s;}
+.filter-btn:hover,.filter-btn.active{border-color:var(--p);color:var(--p);background:var(--p-pale);}
+table{width:100%;border-collapse:collapse;}
+th{padding:12px 20px;text-align:left;font-size:11.5px;font-weight:700;color:var(--g500);text-transform:uppercase;letter-spacing:.6px;background:var(--g100);border-bottom:1px solid var(--g200);}
+td{padding:14px 20px;font-size:13.5px;border-bottom:1px solid var(--g200);color:var(--g900);}
+tr:last-child td{border-bottom:none;}
+tr:hover td{background:var(--p-pale);}
+.status-pill{display:inline-flex;align-items:center;gap:5px;padding:4px 12px;border-radius:20px;font-size:12px;font-weight:700;}
+.status-pill.pending{background:#FEF3C7;color:#D97706;}
+.status-pill.approved{background:#DCFCE7;color:#16A34A;}
+.status-pill.rejected{background:#FEE2E2;color:#DC2626;}
+.status-pill.active{background:#DBEAFE;color:#2563EB;}
+.status-pill.suspended{background:#F3F4F6;color:#6B7280;}
+.status-pill.priced{background:var(--admin-pale);color:var(--admin);}
+.status-pill::before{content:'';width:6px;height:6px;background:currentColor;border-radius:50%;}
+.action-btns{display:flex;gap:6px;}
+.icon-btn{width:32px;height:32px;border-radius:var(--rs);border:1.5px solid var(--g200);background:transparent;display:flex;align-items:center;justify-content:center;cursor:pointer;transition:all .2s;color:var(--g500);}
+.icon-btn:hover.approve{border-color:var(--g);color:var(--g);background:var(--g-pale);}
+.icon-btn:hover.reject{border-color:#DC2626;color:#DC2626;background:#FEE2E2;}
+.icon-btn:hover.edit{border-color:var(--admin);color:var(--admin);background:var(--admin-pale);}
+.icon-btn:hover.price{border-color:var(--p);color:var(--p);background:var(--p-pale);}
+.product-cell{display:flex;align-items:center;gap:12px;}
+.product-img-box{width:44px;height:44px;border-radius:10px;background:var(--g100);display:flex;align-items:center;justify-content:center;font-size:22px;flex-shrink:0;overflow:hidden;}
+.product-info strong{font-size:13.5px;display:block;font-weight:600;}
+.product-info span{font-size:12px;color:var(--g500);}
+.seller-cell{display:flex;align-items:center;gap:10px;}
+.s-mini-avatar{width:30px;height:30px;border-radius:50%;background:linear-gradient(135deg,var(--p),var(--p-dark));display:flex;align-items:center;justify-content:center;font-size:12px;font-weight:700;color:#fff;flex-shrink:0;}
+.pagination{display:flex;align-items:center;justify-content:space-between;padding:16px 24px;border-top:1px solid var(--g200);}
+.pagination-info{font-size:13px;color:var(--g500);}
+.pagination-btns{display:flex;gap:6px;}
+.pg-btn{width:32px;height:32px;border-radius:var(--rs);border:1.5px solid var(--g200);background:transparent;font-size:13px;font-weight:600;color:var(--g700);cursor:pointer;transition:all .2s;display:flex;align-items:center;justify-content:center;}
+.pg-btn:hover,.pg-btn.active{border-color:var(--p);color:var(--p);background:var(--p-pale);}
+
+/* ─── MINI CARDS ─── */
+.mini-card{background:#fff;border-radius:var(--r);padding:20px;box-shadow:var(--sh);}
+.mini-card h4{font-size:14px;font-weight:700;margin-bottom:14px;color:var(--g900);}
+.activity-list{display:flex;flex-direction:column;gap:0;}
+.activity-item{display:flex;gap:12px;align-items:flex-start;padding:12px 0;border-bottom:1px solid var(--g200);}
+.activity-item:last-child{border-bottom:none;}
+.act-icon{width:34px;height:34px;border-radius:10px;display:flex;align-items:center;justify-content:center;font-size:16px;flex-shrink:0;}
+.act-icon.orange{background:var(--p-pale);}
+.act-icon.green{background:var(--g-pale);}
+.act-icon.purple{background:var(--admin-pale);}
+.act-icon.earth{background:var(--earth-l);}
+.act-info strong{font-size:13px;font-weight:600;display:block;}
+.act-info span{font-size:12px;color:var(--g500);}
+.act-time{margin-left:auto;font-size:11.5px;color:var(--g500);white-space:nowrap;}
+
+/* top sellers */
+.top-seller-item{display:flex;align-items:center;gap:12px;padding:10px 0;border-bottom:1px solid var(--g200);}
+.top-seller-item:last-child{border-bottom:none;}
+.rank-badge{width:24px;height:24px;border-radius:50%;background:var(--g100);font-size:11px;font-weight:800;color:var(--g700);display:flex;align-items:center;justify-content:center;flex-shrink:0;}
+.rank-badge.gold{background:#FEF3C7;color:#D97706;}
+.rank-badge.silver{background:#F3F4F6;color:#6B7280;}
+.rank-badge.bronze{background:#FEF3C7;color:#92400E;}
+.ts-info{flex:1;}
+.ts-info strong{font-size:13px;font-weight:600;display:block;}
+.ts-info span{font-size:11.5px;color:var(--g500);}
+.ts-rev{font-size:13px;font-weight:700;color:var(--g);}
+
+/* ─── PENDING APPROVALS HIGHLIGHT ─── */
+.approvals-banner{
+  background:linear-gradient(135deg,var(--p-pale),#FFF7ED);
+  border:1.5px solid var(--p-light);border-radius:var(--r);
+  padding:18px 24px;margin-bottom:24px;
+  display:flex;align-items:center;gap:16px;
+}
+.approvals-banner .icon{font-size:28px;}
+.approvals-banner h4{font-size:15px;font-weight:700;color:var(--g900);}
+.approvals-banner p{font-size:13px;color:var(--g500);margin-top:2px;}
+.approvals-banner .btn{margin-left:auto;flex-shrink:0;}
+
+/* ─── PRODUCT APPROVAL CARDS ─── */
+.approval-grid{display:grid;grid-template-columns:repeat(3,1fr);gap:18px;margin-bottom:28px;}
+.approval-card{background:#fff;border-radius:var(--r);overflow:hidden;box-shadow:var(--sh);transition:transform .2s,box-shadow .2s;}
+.approval-card:hover{transform:translateY(-3px);box-shadow:var(--sh2);}
+.approval-img{height:160px;background:var(--g100);display:flex;align-items:center;justify-content:center;font-size:64px;position:relative;overflow:hidden;}
+.approval-img img{width:100%;height:100%;object-fit:cover;display:block;}
+.approval-new-tag{position:absolute;top:12px;left:12px;background:var(--p);color:#fff;font-size:11px;font-weight:700;padding:3px 10px;border-radius:20px;}
+.approval-body{padding:16px;}
+.approval-body h4{font-size:14px;font-weight:700;margin-bottom:4px;}
+.approval-body .meta{font-size:12px;color:var(--g500);margin-bottom:12px;}
+.approval-status{display:flex;align-items:center;justify-content:space-between;margin-bottom:14px;}
+.price-input-row{display:flex;gap:8px;align-items:center;}
+.price-input{flex:1;padding:8px 14px;border:1.5px solid var(--g200);border-radius:var(--rs);font-size:13px;font-family:'DM Sans',sans-serif;outline:none;transition:border-color .2s;}
+.price-input:focus{border-color:var(--p);}
+.price-input::placeholder{color:var(--g300);}
+.approval-actions{display:flex;gap:8px;margin-top:12px;}
+.approval-actions .btn{flex:1;justify-content:center;padding:8px 12px;font-size:12.5px;}
+
+/* ─── PROMO MANAGER ─── */
+.promo-grid{display:grid;grid-template-columns:repeat(3,1fr);gap:18px;margin-bottom:28px;}
+.promo-manager-card{background:#fff;border-radius:var(--r);overflow:hidden;box-shadow:var(--sh);}
+.promo-thumb{height:140px;display:flex;align-items:center;justify-content:center;font-size:48px;position:relative;}
+.promo-thumb.slide1{background:linear-gradient(160deg,#FFF3E0,#FFCCBC);}
+.promo-thumb.slide2{background:linear-gradient(160deg,#E8F5E9,#C8E6C9);}
+.promo-thumb.slide3{background:linear-gradient(160deg,#FFF8E1,#FFECB3);}
+.promo-thumb.slide4{background:linear-gradient(160deg,#FCE4EC,#F8BBD0);}
+.promo-status-dot{position:absolute;top:10px;right:10px;width:10px;height:10px;border-radius:50%;border:2px solid #fff;}
+.promo-status-dot.live{background:#22C55E;}
+.promo-status-dot.scheduled{background:#F59E0B;}
+.promo-status-dot.draft{background:#9CA3AF;}
+.promo-info{padding:14px;}
+.promo-info h4{font-size:13.5px;font-weight:700;margin-bottom:4px;}
+.promo-info .meta{font-size:11.5px;color:var(--g500);margin-bottom:10px;}
+.promo-info .actions{display:flex;gap:6px;}
+.upload-promo-card{border:2px dashed var(--g200);border-radius:var(--r);height:100%;min-height:220px;display:flex;flex-direction:column;align-items:center;justify-content:center;gap:12px;cursor:pointer;transition:all .2s;background:transparent;}
+.upload-promo-card:hover{border-color:var(--p);background:var(--p-pale);}
+.upload-promo-card .icon{width:52px;height:52px;background:var(--g100);border-radius:50%;display:flex;align-items:center;justify-content:center;font-size:24px;}
+.upload-promo-card p{font-size:13px;color:var(--g500);font-weight:500;}
+
+/* ─── SELLER MGMT ─── */
+.seller-doc-card{background:#fff;border-radius:var(--r);padding:20px;box-shadow:var(--sh);display:flex;flex-direction:column;gap:14px;}
+.doc-item{display:flex;align-items:center;gap:10px;padding:10px 14px;background:var(--g100);border-radius:var(--rs);}
+.doc-icon{font-size:20px;flex-shrink:0;}
+.doc-info{flex:1;}
+.doc-info strong{font-size:13px;font-weight:600;display:block;}
+.doc-info span{font-size:11.5px;color:var(--g500);}
+.doc-status{font-size:12px;font-weight:700;padding:3px 10px;border-radius:20px;}
+.doc-status.ok{background:#DCFCE7;color:#16A34A;}
+.doc-status.pending{background:#FEF3C7;color:#D97706;}
+.doc-status.missing{background:#FEE2E2;color:#DC2626;}
+
+/* ─── ANALYTICS PAGE ─── */
+.kpi-strip{display:grid;grid-template-columns:repeat(6,1fr);gap:14px;margin-bottom:28px;}
+.kpi-card{background:#fff;border-radius:var(--r);padding:18px 14px;box-shadow:var(--sh);text-align:center;}
+.kpi-val{font-family:'Playfair Display',serif;font-size:22px;font-weight:700;color:var(--g900);}
+.kpi-label{font-size:11px;color:var(--g500);margin-top:4px;font-weight:500;}
+.kpi-trend{font-size:11px;font-weight:700;margin-top:6px;}
+.kpi-trend.up{color:#16A34A;}
+.kpi-trend.down{color:#DC2626;}
+
+.line-chart-svg{width:100%;height:160px;overflow:visible;}
+
+/* ─── SETTINGS CARDS ─── */
+.settings-grid{display:grid;grid-template-columns:1fr 1fr;gap:18px;margin-bottom:28px;}
+.settings-card{background:#fff;border-radius:var(--r);padding:24px;box-shadow:var(--sh);}
+.settings-card h3{font-size:15px;font-weight:700;margin-bottom:18px;padding-bottom:14px;border-bottom:1px solid var(--g200);}
+.setting-row{display:flex;align-items:center;justify-content:space-between;padding:12px 0;border-bottom:1px solid var(--g200);}
+.setting-row:last-child{border-bottom:none;}
+.setting-label{font-size:13.5px;font-weight:500;}
+.setting-sub{font-size:12px;color:var(--g500);margin-top:2px;}
+.toggle{position:relative;width:44px;height:24px;flex-shrink:0;}
+.toggle input{opacity:0;width:0;height:0;}
+.toggle-slider{position:absolute;top:0;left:0;right:0;bottom:0;background:var(--g200);border-radius:24px;cursor:pointer;transition:.3s;}
+.toggle-slider::before{content:'';position:absolute;width:18px;height:18px;left:3px;bottom:3px;background:#fff;border-radius:50%;transition:.3s;box-shadow:0 1px 4px rgba(0,0,0,.15);}
+.toggle input:checked + .toggle-slider{background:var(--p);}
+.toggle input:checked + .toggle-slider::before{transform:translateX(20px);}
+.commission-row{display:flex;align-items:center;gap:12px;padding:12px 0;border-bottom:1px solid var(--g200);}
+.commission-row:last-child{border-bottom:none;}
+.commission-row label{font-size:13.5px;font-weight:500;flex:1;}
+.commission-row input{width:80px;padding:7px 12px;border:1.5px solid var(--g200);border-radius:var(--rs);font-size:13px;font-family:'DM Sans',sans-serif;outline:none;text-align:right;}
+.commission-row input:focus{border-color:var(--p);}
+
+/* ─── TOAST ─── */
+.toast{position:fixed;bottom:28px;right:28px;z-index:9999;display:flex;flex-direction:column;gap:10px;pointer-events:none;}
+.toast-item{
+  display:flex;align-items:center;gap:10px;
+  background:#fff;border-radius:14px;padding:14px 18px;
+  box-shadow:0 8px 32px rgba(0,0,0,.14);
+  font-size:13.5px;font-weight:500;
+  animation:toastIn .35s cubic-bezier(.34,1.56,.64,1);
+  pointer-events:auto;border-left:4px solid var(--g);max-width:320px;
+}
+.toast-item.warn{border-color:var(--p);}
+.toast-item.info{border-color:var(--admin);}
+@keyframes toastIn{from{opacity:0;transform:translateX(40px)}to{opacity:1;transform:translateX(0)}}
+.toast-icon{font-size:18px;}
+
+/* ─── MODAL ─── */
+.modal-overlay{position:fixed;inset:0;background:rgba(26,18,9,.5);z-index:200;display:none;align-items:center;justify-content:center;padding:24px;backdrop-filter:blur(4px);}
+.modal-overlay.open{display:flex;animation:fadeIn .2s ease;}
+.modal{background:#fff;border-radius:var(--rl);padding:32px;max-width:500px;width:100%;position:relative;animation:slideUp .3s cubic-bezier(.34,1.56,.64,1);}
+@keyframes slideUp{from{opacity:0;transform:translateY(30px)}to{opacity:1;transform:translateY(0)}}
+.modal-close{position:absolute;top:18px;right:18px;width:32px;height:32px;border-radius:50%;border:1.5px solid var(--g200);background:transparent;cursor:pointer;display:flex;align-items:center;justify-content:center;font-size:16px;color:var(--g500);}
+.modal h3{font-size:20px;font-weight:700;margin-bottom:6px;}
+.modal p{font-size:14px;color:var(--g500);margin-bottom:22px;}
+.form-row{margin-bottom:16px;}
+.form-row label{font-size:13px;font-weight:600;color:var(--g700);display:block;margin-bottom:6px;}
+.form-row input,.form-row select,.form-row textarea{width:100%;padding:10px 14px;border:1.5px solid var(--g200);border-radius:var(--rs);font-size:13.5px;font-family:'DM Sans',sans-serif;outline:none;transition:border-color .2s;background:#fff;}
+.form-row input:focus,.form-row select:focus,.form-row textarea:focus{border-color:var(--p);}
+.form-row textarea{resize:vertical;min-height:80px;}
+.modal-actions{display:flex;gap:10px;justify-content:flex-end;margin-top:22px;}
+
+/* ─── EMPTY STATE ─── */
+.empty-state{text-align:center;padding:60px 24px;}
+.empty-state .icon{font-size:52px;margin-bottom:14px;}
+.empty-state h3{font-size:18px;font-weight:700;margin-bottom:8px;}
+.empty-state p{font-size:14px;color:var(--g500);}
+
+/* ─── MISC ─── */
+.section-title{font-size:18px;font-weight:700;color:var(--g900);margin-bottom:18px;}
+.section-title span{color:var(--p);}
+.tag{display:inline-block;padding:3px 10px;border-radius:20px;font-size:11.5px;font-weight:700;}
+.tag.cat{background:var(--admin-pale);color:var(--admin);}
+.tag.cert{background:var(--g-pale);color:var(--g);}
+.rating{display:flex;align-items:center;gap:4px;font-size:12px;font-weight:600;color:#D97706;}
+.progress-bar{height:6px;background:var(--g200);border-radius:3px;overflow:hidden;margin-top:4px;}
+.progress-fill{height:100%;border-radius:3px;background:linear-gradient(90deg,var(--p),var(--p-dark));}
+.progress-fill.green{background:linear-gradient(90deg,var(--g),#2d5a14);}
+.progress-fill.purple{background:linear-gradient(90deg,var(--admin),#6d28d9);}
+
+/* ─── PRICE TYPOGRAPHY ─── */
+.stat-val{font-family:'Playfair Display',serif;font-size:30px;font-weight:900 !important;letter-spacing:-.5px;color:var(--g900);}
+.ts-rev{font-family:'Playfair Display',serif;font-size:14px;font-weight:800 !important;letter-spacing:-.2px;}
+.legend-val{font-family:'Playfair Display',serif;font-weight:800 !important;font-size:14px;letter-spacing:-.2px;}
+.donut-center strong{font-family:'Playfair Display',serif;font-size:24px;font-weight:900 !important;letter-spacing:-.5px;}
+/* Price values in table cells (₹ amounts) */
+td:has(> .action-btns) ~ td, /* order amounts */
+.price-input{font-family:'Playfair Display',serif;font-weight:700;}
+/* Revenue/amount cells — target data cells containing ₹ */
+table td[style*="font-weight"]{font-family:'Playfair Display',serif !important;font-weight:900 !important;letter-spacing:-.3px;}
+/* Hamburger for admin */
+.admin-hamburger{
+  display:none;flex-direction:column;gap:5px;cursor:pointer;
+  background:transparent;border:none;padding:6px;margin-right:8px;
+}
+.admin-hamburger span{display:block;width:20px;height:2px;background:var(--g700);border-radius:2px;transition:all .3s;}
+.admin-hamburger.open span:nth-child(1){transform:translateY(7px) rotate(45deg);}
+.admin-hamburger.open span:nth-child(2){opacity:0;}
+.admin-hamburger.open span:nth-child(3){transform:translateY(-7px) rotate(-45deg);}
+/* sidebar overlay bg */
+.sidebar-overlay{
+  display:none;position:fixed;inset:0;background:rgba(0,0,0,.4);z-index:99;
+}
+.sidebar-overlay.open{display:block;}
+
+@media(max-width:900px){
+  .sidebar{transform:translateX(-100%);z-index:100;}
+  .sidebar.open{transform:translateX(0);}
+  .main{margin-left:0;}
+  .admin-hamburger{display:flex;}
+  .topbar{padding:0 16px;gap:12px;}
+  .topbar-title{font-size:16px;}
+  .search-bar{display:none;}
+  .page{padding:20px 16px;}
+  .stats-grid{grid-template-columns:repeat(2,1fr);}
+  .kpi-strip{grid-template-columns:repeat(2,1fr);}
+  .approval-grid{grid-template-columns:1fr;}
+  .charts-row{grid-template-columns:1fr;}
+  .page-header{flex-direction:column;align-items:flex-start;gap:8px;}
+}
+
+@media(max-width:600px){
+  .page{padding:16px;}
+  .stats-grid{grid-template-columns:1fr 1fr;}
+  .kpi-strip{grid-template-columns:1fr 1fr;}
+  .approval-grid{grid-template-columns:1fr;}
+  .admin-table-wrap,.table-wrap{overflow-x:auto;}
+  table{min-width:580px;}
+  th,td{padding:10px 12px;font-size:12px;}
+  th:nth-child(4),td:nth-child(4){display:none;}
+}
+</style>
+</head>
+<body>
+
+<!-- ─── ADMIN LOGIN OVERLAY ─── -->
+<div id="admin-login-overlay" style="
+  position:fixed;inset:0;z-index:9999;
+  background:linear-gradient(135deg,#1A1209 0%,#2d1a0e 50%,#1a0a2e 100%);
+  display:flex;align-items:center;justify-content:center;
+">
+  <div style="
+    background:#fff;border-radius:20px;padding:44px 40px;width:100%;max-width:400px;
+    box-shadow:0 32px 80px rgba(0,0,0,.4);text-align:center;
+  ">
+    <div style="font-family:'Playfair Display',serif;font-size:32px;font-weight:900;color:#F97316;margin-bottom:4px;">
+      Organ<span style="color:#3D7A1F">o</span>
+    </div>
+    <div style="display:inline-block;background:#7C3AED;color:#fff;font-size:11px;font-weight:800;padding:3px 12px;border-radius:20px;letter-spacing:.5px;text-transform:uppercase;margin-bottom:24px;">Admin Panel</div>
+    <h2 style="font-family:'Playfair Display',serif;font-size:22px;font-weight:700;color:#1A1209;margin-bottom:6px;">Welcome back</h2>
+    <p style="font-size:13.5px;color:#8C8070;margin-bottom:28px;">Sign in to your admin account to continue</p>
+
+    <div id="login-error" style="display:none;background:#FEE2E2;color:#DC2626;border-radius:10px;padding:10px 14px;font-size:13px;margin-bottom:16px;text-align:left;"></div>
+
+    <div style="text-align:left;margin-bottom:14px;">
+      <label style="font-size:12.5px;font-weight:600;color:#4A4035;display:block;margin-bottom:6px;">Email</label>
+      <input id="admin-email" type="email" placeholder="admin@example.com" style="
+        width:100%;padding:11px 16px;border:1.5px solid #EEE9E0;border-radius:10px;
+        font-size:14px;font-family:'DM Sans',sans-serif;outline:none;transition:border-color .2s;
+      " onkeydown="if(event.key==='Enter')adminLogin()">
+    </div>
+    <div style="text-align:left;margin-bottom:24px;">
+      <label style="font-size:12.5px;font-weight:600;color:#4A4035;display:block;margin-bottom:6px;">Password</label>
+      <input id="admin-password" type="password" placeholder="••••••••" style="
+        width:100%;padding:11px 16px;border:1.5px solid #EEE9E0;border-radius:10px;
+        font-size:14px;font-family:'DM Sans',sans-serif;outline:none;transition:border-color .2s;
+      " onkeydown="if(event.key==='Enter')adminLogin()">
+    </div>
+    <button onclick="adminLogin()" id="login-btn" style="
+      width:100%;padding:13px;background:#F97316;color:#fff;border:none;border-radius:40px;
+      font-size:15px;font-weight:700;font-family:'DM Sans',sans-serif;cursor:pointer;
+      transition:background .2s,transform .1s;
+    " onmouseover="this.style.background='#C2410C'" onmouseout="this.style.background='#F97316'">
+      Sign In →
+    </button>
+    <p style="font-size:12px;color:#8C8070;margin-top:18px;">Admin access only. Unauthorised access is prohibited.</p>
+  </div>
+</div>
+
+<div class="layout">
+<div class="sidebar-overlay" id="sidebarOverlay" onclick="toggleAdminSidebar()"></div>
+
+<!-- ─── SIDEBAR ─── -->
+<aside class="sidebar" id="adminSidebar">
+  <div class="sidebar-logo">
+    <span class="logo-text">Organ<span>o</span></span>
+    <span class="admin-badge-logo">Admin</span>
+  </div>
+
+  <div class="sidebar-user">
+    <div class="s-avatar">A</div>
+    <div class="s-user-info">
+      <h5>Arjun Mehta</h5>
+      <p>Super Administrator</p>
+      <span class="s-online">Online</span>
+    </div>
+  </div>
+
+  <nav class="sidebar-nav">
+    <div class="nav-section-label">Overview</div>
+    <div class="nav-item active" onclick="showPage('dashboard',this)">
+      <svg class="nav-icon" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2"><rect x="3" y="3" width="7" height="7" rx="1"/><rect x="14" y="3" width="7" height="7" rx="1"/><rect x="3" y="14" width="7" height="7" rx="1"/><rect x="14" y="14" width="7" height="7" rx="1"/></svg>
+      Dashboard
+    </div>
+    <div class="nav-item" onclick="showPage('analytics',this)">
+      <svg class="nav-icon" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2"><polyline points="22 12 18 12 15 21 9 3 6 12 2 12"/></svg>
+      Analytics
+    </div>
+
+    <div class="nav-section-label">Approvals</div>
+    <div class="nav-item" onclick="showPage('products',this)">
+      <svg class="nav-icon" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2"><path d="M20 7H4a2 2 0 00-2 2v6a2 2 0 002 2h16a2 2 0 002-2V9a2 2 0 00-2-2z"/><path d="M16 21V5a2 2 0 00-2-2h-4a2 2 0 00-2 2v16"/></svg>
+      Product Approvals
+      <span class="nav-badge">12</span>
+    </div>
+    <div class="nav-item" onclick="showPage('sellers',this)">
+      <svg class="nav-icon" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2"><path d="M17 21v-2a4 4 0 00-4-4H5a4 4 0 00-4 4v2"/><circle cx="9" cy="7" r="4"/><path d="M23 21v-2a4 4 0 00-3-3.87"/><path d="M16 3.13a4 4 0 010 7.75"/></svg>
+      Seller Management
+      <span class="nav-badge purple">3</span>
+    </div>
+
+    <div class="nav-section-label">Content</div>
+    <div class="nav-item" onclick="showPage('promos',this)">
+      <svg class="nav-icon" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2"><rect x="3" y="3" width="18" height="18" rx="2"/><path d="M3 9h18M9 21V9"/></svg>
+      Promo Banners
+    </div>
+    <div class="nav-item" onclick="showPage('categories',this)">
+      <svg class="nav-icon" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2"><path d="M4 6h16M4 12h16M4 18h7"/></svg>
+      Categories
+    </div>
+
+    <div class="nav-section-label">Commerce</div>
+    <div class="nav-item" onclick="showPage('orders',this)">
+      <svg class="nav-icon" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2"><path d="M6 2L3 6v14a2 2 0 002 2h14a2 2 0 002-2V6l-3-4z"/><line x1="3" y1="6" x2="21" y2="6"/><path d="M16 10a4 4 0 01-8 0"/></svg>
+      Orders
+      <span class="nav-badge green">8</span>
+    </div>
+    <div class="nav-item" onclick="showPage('coupons',this)">
+      <svg class="nav-icon" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2"><path d="M7 7h.01M17 17h.01M7 3H5a2 2 0 00-2 2v2M17 3h2a2 2 0 012 2v2M7 21H5a2 2 0 01-2-2v-2M17 21h2a2 2 0 002-2v-2M5 12l7-7 7 7-7 7-7-7z"/></svg>
+      Coupons & Offers
+    </div>
+    <div class="nav-item" onclick="showPage('disputes',this)">
+      <svg class="nav-icon" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2"><circle cx="12" cy="12" r="10"/><line x1="12" y1="8" x2="12" y2="12"/><line x1="12" y1="16" x2="12.01" y2="16"/></svg>
+      Disputes & Refunds
+    </div>
+
+    <div class="nav-section-label">System</div>
+    <div class="nav-item" onclick="showPage('settings',this)">
+      <svg class="nav-icon" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2"><circle cx="12" cy="12" r="3"/><path d="M19.4 15a1.65 1.65 0 00.33 1.82l.06.06a2 2 0 010 2.83 2 2 0 01-2.83 0l-.06-.06a1.65 1.65 0 00-1.82-.33 1.65 1.65 0 00-1 1.51V21a2 2 0 01-4 0v-.09A1.65 1.65 0 009 19.4a1.65 1.65 0 00-1.82.33l-.06.06a2 2 0 01-2.83-2.83l.06-.06A1.65 1.65 0 004.68 15a1.65 1.65 0 00-1.51-1H3a2 2 0 010-4h.09A1.65 1.65 0 004.6 9a1.65 1.65 0 00-.33-1.82l-.06-.06a2 2 0 012.83-2.83l.06.06A1.65 1.65 0 009 4.68a1.65 1.65 0 001-1.51V3a2 2 0 014 0v.09a1.65 1.65 0 001 1.51 1.65 1.65 0 001.82-.33l.06-.06a2 2 0 012.83 2.83l-.06.06A1.65 1.65 0 0019.4 9a1.65 1.65 0 001.51 1H21a2 2 0 010 4h-.09a1.65 1.65 0 00-1.51 1z"/></svg>
+      Settings
+    </div>
+  </nav>
+
+  <div class="sidebar-bottom">
+    <div class="nav-item" style="color:rgba(255,255,255,.45);" onclick="adminLogout()">
+      <svg class="nav-icon" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2"><path d="M9 21H5a2 2 0 01-2-2V5a2 2 0 012-2h4"/><polyline points="16 17 21 12 16 7"/><line x1="21" y1="12" x2="9" y2="12"/></svg>
+      Logout
+    </div>
+  </div>
+</aside>
+
+<!-- ─── MAIN ─── -->
+<main class="main">
+
+  <!-- TOPBAR -->
+  <header class="topbar">
+    <button class="admin-hamburger" id="adminHamburger" onclick="toggleAdminSidebar()"><span></span><span></span><span></span></button>
+    <div class="topbar-title" id="topbar-title">Dashboard <span>Overview</span></div>
+    <div class="topbar-right">
+      <div class="search-bar">
+        <svg width="16" height="16" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2"><circle cx="11" cy="11" r="8"/><line x1="21" y1="21" x2="16.65" y2="16.65"/></svg>
+        <input type="text" placeholder="Search anything…">
+      </div>
+      <div class="topbar-icon">
+        <svg width="18" height="18" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2"><path d="M18 8A6 6 0 006 8c0 7-3 9-3 9h18s-3-2-3-9"/><path d="M13.73 21a2 2 0 01-3.46 0"/></svg>
+        <div class="notif-dot"></div>
+      </div>
+      <div class="topbar-icon">
+        <svg width="18" height="18" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2"><circle cx="12" cy="8" r="4"/><path d="M20 21a8 8 0 10-16 0"/></svg>
+      </div>
+    </div>
+  </header>
+
+  <!-- ═══════════════════════════════════════════ -->
+  <!-- PAGE: DASHBOARD -->
+  <!-- ═══════════════════════════════════════════ -->
+  <div class="page active" id="page-dashboard">
+
+    <!-- Pending Banner -->
+    <div class="approvals-banner">
+      <div class="icon">⏳</div>
+      <div>
+        <h4>12 products awaiting price & approval</h4>
+        <p>3 new seller registrations also need your review today.</p>
+      </div>
+      <button class="btn btn-primary" onclick="showPage('products',document.querySelector('[onclick*=products]'))">Review Products →</button>
+    </div>
+
+    <!-- Stats -->
+    <div class="stats-grid">
+      <div class="stat-card orange">
+        <div class="stat-icon orange">📦</div>
+        <div class="stat-val">₹4.82L</div>
+        <div class="stat-label">Total Revenue (Month)</div>
+        <span class="stat-change up">↑ 18.4%</span>
+      </div>
+      <div class="stat-card green">
+        <div class="stat-icon green">🛒</div>
+        <div class="stat-val">2,341</div>
+        <div class="stat-label">Orders This Month</div>
+        <span class="stat-change up">↑ 11.2%</span>
+      </div>
+      <div class="stat-card purple">
+        <div class="stat-icon purple">🏪</div>
+        <div class="stat-val">187</div>
+        <div class="stat-label">Active Sellers</div>
+        <span class="stat-change up">↑ 5 new</span>
+      </div>
+      <div class="stat-card earth">
+        <div class="stat-icon earth">👥</div>
+        <div class="stat-val">14,209</div>
+        <div class="stat-label">Registered Buyers</div>
+        <span class="stat-change up">↑ 8.7%</span>
+      </div>
+    </div>
+
+    <!-- Charts Row -->
+    <div class="charts-row">
+      <div class="chart-card">
+        <div class="chart-head">
+          <h3>Revenue Overview</h3>
+          <div class="chart-tabs">
+            <button class="chart-tab active">Week</button>
+            <button class="chart-tab" onclick="switchTab(this)">Month</button>
+            <button class="chart-tab" onclick="switchTab(this)">Year</button>
+          </div>
+        </div>
+        <div class="bar-chart" id="revenue-chart">
+          <!-- bars injected by JS -->
+        </div>
+        <div style="display:flex;gap:14px;margin-top:16px;">
+          <span style="display:flex;align-items:center;gap:6px;font-size:12px;color:var(--g500)"><span style="width:10px;height:10px;border-radius:2px;background:var(--p);display:inline-block"></span>Revenue</span>
+          <span style="display:flex;align-items:center;gap:6px;font-size:12px;color:var(--g500)"><span style="width:10px;height:10px;border-radius:2px;background:var(--g);display:inline-block"></span>Orders</span>
+        </div>
+      </div>
+
+      <div class="chart-card">
+        <div class="chart-head"><h3>Category Mix</h3></div>
+        <div class="donut-wrap">
+          <div class="donut">
+            <svg viewBox="0 0 120 120" width="150" height="150">
+              <circle cx="60" cy="60" r="50" fill="none" stroke="var(--g200)" stroke-width="18"/>
+              <circle cx="60" cy="60" r="50" fill="none" stroke="var(--p)" stroke-width="18" stroke-dasharray="110 204" stroke-linecap="round"/>
+              <circle cx="60" cy="60" r="50" fill="none" stroke="var(--g)" stroke-width="18" stroke-dasharray="65 249" stroke-dashoffset="-110" stroke-linecap="round"/>
+              <circle cx="60" cy="60" r="50" fill="none" stroke="var(--admin)" stroke-width="18" stroke-dasharray="42 272" stroke-dashoffset="-175" stroke-linecap="round"/>
+              <circle cx="60" cy="60" r="50" fill="none" stroke="var(--earth)" stroke-width="18" stroke-dasharray="27 287" stroke-dashoffset="-217" stroke-linecap="round"/>
+            </svg>
+            <div class="donut-center"><strong>1,847</strong><span>products</span></div>
+          </div>
+          <div class="donut-legend">
+            <div class="legend-item"><span class="legend-dot" style="background:var(--p)"></span><span class="legend-label">Vegetables</span><span class="legend-val">34%</span></div>
+            <div class="legend-item"><span class="legend-dot" style="background:var(--g)"></span><span class="legend-label">Fruits</span><span class="legend-val">20%</span></div>
+            <div class="legend-item"><span class="legend-dot" style="background:var(--admin)"></span><span class="legend-label">Dairy</span><span class="legend-val">13%</span></div>
+            <div class="legend-item"><span class="legend-dot" style="background:var(--earth)"></span><span class="legend-label">Grains & Others</span><span class="legend-val">33%</span></div>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <!-- Two Col: Activity + Top Sellers -->
+    <div class="two-col" style="margin-bottom:28px;">
+      <div class="mini-card">
+        <h4>Recent Activity</h4>
+        <div class="activity-list">
+          <div class="activity-item">
+            <div class="act-icon orange">📦</div>
+            <div class="act-info"><strong>Product approved</strong><span>A2 Desi Cow Ghee by GreenFarm Co.</span></div>
+            <span class="act-time">2m ago</span>
+          </div>
+          <div class="activity-item">
+            <div class="act-icon green">🏪</div>
+            <div class="act-info"><strong>New seller registered</strong><span>Ravi's Organic Farm, Pune</span></div>
+            <span class="act-time">18m ago</span>
+          </div>
+          <div class="activity-item">
+            <div class="act-icon purple">🏷️</div>
+            <div class="act-info"><strong>Price set</strong><span>Himalayan Pink Salt — ₹149/500g</span></div>
+            <span class="act-time">45m ago</span>
+          </div>
+          <div class="activity-item">
+            <div class="act-icon earth">🎟️</div>
+            <div class="act-info"><strong>Coupon created</strong><span>ORGANIC20 — 20% off, expires Jun 30</span></div>
+            <span class="act-time">1h ago</span>
+          </div>
+          <div class="activity-item">
+            <div class="act-icon orange">❌</div>
+            <div class="act-info"><strong>Product rejected</strong><span>Mixed Millet — incomplete certifications</span></div>
+            <span class="act-time">2h ago</span>
+          </div>
+          <div class="activity-item">
+            <div class="act-icon green">🖼️</div>
+            <div class="act-info"><strong>Promo banner published</strong><span>Monsoon Veggie Sale Campaign</span></div>
+            <span class="act-time">3h ago</span>
+          </div>
+        </div>
+      </div>
+
+      <div class="mini-card">
+        <h4>Top Sellers This Month</h4>
+        <div class="top-seller-item">
+          <div class="rank-badge gold">1</div>
+          <div class="s-mini-avatar" style="background:linear-gradient(135deg,var(--g),#2d5a14)">G</div>
+          <div class="ts-info"><strong>GreenFarm Organics</strong><span>Pune · 284 orders</span></div>
+          <span class="ts-rev">₹72,400</span>
+        </div>
+        <div class="top-seller-item">
+          <div class="rank-badge silver">2</div>
+          <div class="s-mini-avatar">P</div>
+          <div class="ts-info"><strong>PureHarvest Co.</strong><span>Nashik · 211 orders</span></div>
+          <span class="ts-rev">₹58,200</span>
+        </div>
+        <div class="top-seller-item">
+          <div class="rank-badge bronze">3</div>
+          <div class="s-mini-avatar" style="background:linear-gradient(135deg,var(--admin),#6d28d9)">N</div>
+          <div class="ts-info"><strong>NaturalRoots Farm</strong><span>Coimbatore · 198 orders</span></div>
+          <span class="ts-rev">₹51,900</span>
+        </div>
+        <div class="top-seller-item">
+          <div class="rank-badge">4</div>
+          <div class="s-mini-avatar" style="background:linear-gradient(135deg,var(--earth),#7c2d12)">E</div>
+          <div class="ts-info"><strong>EarthFirst Stores</strong><span>Bangalore · 176 orders</span></div>
+          <span class="ts-rev">₹43,700</span>
+        </div>
+        <div class="top-seller-item">
+          <div class="rank-badge">5</div>
+          <div class="s-mini-avatar" style="background:linear-gradient(135deg,#0891b2,#0e7490)">V</div>
+          <div class="ts-info"><strong>VedaOrganic</strong><span>Hyderabad · 162 orders</span></div>
+          <span class="ts-rev">₹39,200</span>
+        </div>
+
+        <div style="margin-top:16px;padding-top:14px;border-top:1px solid var(--g200);">
+          <div style="font-size:12px;color:var(--g500);margin-bottom:8px;font-weight:600;">Conversion Rate</div>
+          <div style="font-size:22px;font-family:'Playfair Display',serif;font-weight:700;">68.4%</div>
+          <div class="progress-bar" style="margin-top:8px;"><div class="progress-fill" style="width:68%"></div></div>
+          <div style="font-size:12px;color:var(--g500);margin-top:6px;">↑ 4.2% from last month</div>
+        </div>
+      </div>
+    </div>
+
+    <!-- Pending Products Quick Table -->
+    <div class="table-card">
+      <div class="table-head">
+        <h3>Pending Product Approvals</h3>
+        <button class="btn btn-primary btn-sm" onclick="showPage('products',document.querySelector('[onclick*=products]'))">View All →</button>
+      </div>
+      <table>
+        <thead>
+          <tr><th>Product</th><th>Seller</th><th>Category</th><th>Submitted</th><th>Status</th><th>Actions</th></tr>
+        </thead>
+        <tbody>
+          <tr>
+            <td><div class="product-cell"><div class="product-img-box"><img src="https://source.unsplash.com/44x44/?milk,organic" alt="A2 Cow Milk" style="width:100%;height:100%;object-fit:cover;border-radius:10px;"></div><div class="product-info"><strong>A2 Cow Milk (1L)</strong><span>500ml & 1L packs</span></div></div></td>
+            <td><div class="seller-cell"><div class="s-mini-avatar">G</div>GreenFarm Co.</div></td>
+            <td><span class="tag cat">Dairy</span></td>
+            <td>Today, 09:14</td>
+            <td><span class="status-pill pending">Pending</span></td>
+            <td><div class="action-btns"><button class="icon-btn price" title="Set Price" onclick="openPriceModal('A2 Cow Milk')">₹</button><button class="icon-btn approve" title="Approve">✓</button><button class="icon-btn reject" title="Reject">✕</button></div></td>
+          </tr>
+          <tr>
+            <td><div class="product-cell"><div class="product-img-box"><img src="https://source.unsplash.com/44x44/?broccoli,organic" alt="Organic Broccoli" style="width:100%;height:100%;object-fit:cover;border-radius:10px;"></div><div class="product-info"><strong>Organic Broccoli</strong><span>Per 500g bunch</span></div></div></td>
+            <td><div class="seller-cell"><div class="s-mini-avatar" style="background:linear-gradient(135deg,var(--g),#2d5a14)">P</div>PureHarvest</div></td>
+            <td><span class="tag cat">Vegetables</span></td>
+            <td>Today, 08:45</td>
+            <td><span class="status-pill pending">Pending</span></td>
+            <td><div class="action-btns"><button class="icon-btn price" onclick="openPriceModal('Organic Broccoli')">₹</button><button class="icon-btn approve">✓</button><button class="icon-btn reject">✕</button></div></td>
+          </tr>
+          <tr>
+            <td><div class="product-cell"><div class="product-img-box"><img src="https://source.unsplash.com/44x44/?honey,jar" alt="Raw Forest Honey" style="width:100%;height:100%;object-fit:cover;border-radius:10px;"></div><div class="product-info"><strong>Raw Forest Honey</strong><span>250g glass jar</span></div></div></td>
+            <td><div class="seller-cell"><div class="s-mini-avatar" style="background:linear-gradient(135deg,var(--earth),#7c2d12)">N</div>NaturalRoots</div></td>
+            <td><span class="tag cat">Herbal</span></td>
+            <td>Yesterday</td>
+            <td><span class="status-pill priced">Price Set</span></td>
+            <td><div class="action-btns"><button class="icon-btn edit">✎</button><button class="icon-btn approve">✓</button><button class="icon-btn reject">✕</button></div></td>
+          </tr>
+        </tbody>
+      </table>
+    </div>
+  </div><!-- /page-dashboard -->
+
+  <!-- ═══════════════════════════════════════════ -->
+  <!-- PAGE: PRODUCT APPROVALS -->
+  <!-- ═══════════════════════════════════════════ -->
+  <div class="page" id="page-products">
+    <div style="display:flex;align-items:center;justify-content:space-between;margin-bottom:20px;">
+      <h2 class="section-title">Product <span>Approvals</span></h2>
+      <div class="table-filters">
+        <button class="filter-btn active">All (24)</button>
+        <button class="filter-btn" onclick="filterBtn(this)">Pending (12)</button>
+        <button class="filter-btn" onclick="filterBtn(this)">Price Set (6)</button>
+        <button class="filter-btn" onclick="filterBtn(this)">Approved (4)</button>
+        <button class="filter-btn" onclick="filterBtn(this)">Rejected (2)</button>
+      </div>
+    </div>
+
+    <div class="approval-grid">
+      <!-- Card 1 -->
+      <div class="approval-card">
+        <div class="approval-img"><img src="https://source.unsplash.com/300x160/?milk,organic" alt="A2 Desi Cow Milk" style="width:100%;height:100%;object-fit:cover;"><span class="approval-new-tag">New</span></div>
+        <div class="approval-body">
+          <h4>A2 Desi Cow Milk (1L)</h4>
+          <div class="meta">by GreenFarm Organics · Dairy · 500 units · <span class="tag cert">FSSAI ✓</span></div>
+          <div class="approval-status"><span class="status-pill pending">Pending Review</span><span style="font-size:12px;color:var(--g500)">Today 09:14</span></div>
+          <div class="price-input-row">
+            <input class="price-input" type="number" placeholder="Set selling price (₹)" id="price-1">
+            <button class="btn btn-sm" style="background:var(--admin-pale);color:var(--admin);border:none;font-weight:700;" onclick="setPrice(1)">Set</button>
+          </div>
+          <div class="approval-actions">
+            <button class="btn btn-green btn-sm" onclick="approveProduct(this,'A2 Cow Milk')">✓ Approve</button>
+            <button class="btn btn-danger btn-sm" onclick="rejectProduct(this)">✕ Reject</button>
+            <button class="btn btn-ghost btn-sm" onclick="openPriceModal('A2 Cow Milk')">Details</button>
+          </div>
+        </div>
+      </div>
+
+      <!-- Card 2 -->
+      <div class="approval-card">
+        <div class="approval-img"><img src="https://source.unsplash.com/300x160/?broccoli,organic" alt="Organic Broccoli" style="width:100%;height:100%;object-fit:cover;"></div>
+        <div class="approval-body">
+          <h4>Organic Broccoli (500g)</h4>
+          <div class="meta">by PureHarvest Co. · Vegetables · 320 units · <span class="tag cert">Organic ✓</span></div>
+          <div class="approval-status"><span class="status-pill pending">Pending Review</span><span style="font-size:12px;color:var(--g500)">Today 08:45</span></div>
+          <div class="price-input-row">
+            <input class="price-input" type="number" placeholder="Set selling price (₹)" id="price-2">
+            <button class="btn btn-sm" style="background:var(--admin-pale);color:var(--admin);border:none;font-weight:700;" onclick="setPrice(2)">Set</button>
+          </div>
+          <div class="approval-actions">
+            <button class="btn btn-green btn-sm" onclick="approveProduct(this,'Organic Broccoli')">✓ Approve</button>
+            <button class="btn btn-danger btn-sm" onclick="rejectProduct(this)">✕ Reject</button>
+            <button class="btn btn-ghost btn-sm">Details</button>
+          </div>
+        </div>
+      </div>
+
+      <!-- Card 3 -->
+      <div class="approval-card">
+        <div class="approval-img"><img src="https://source.unsplash.com/300x160/?honey,forest" alt="Raw Forest Honey" style="width:100%;height:100%;object-fit:cover;"></div>
+        <div class="approval-body">
+          <h4>Raw Forest Honey (250g)</h4>
+          <div class="meta">by NaturalRoots Farm · Herbal · 180 units · <span class="tag cert">FSSAI ✓</span></div>
+          <div class="approval-status"><span class="status-pill priced">₹ Price: ₹389</span><span style="font-size:12px;color:var(--g500)">Yesterday</span></div>
+          <div class="price-input-row">
+            <input class="price-input" type="number" value="389" id="price-3">
+            <button class="btn btn-sm" style="background:var(--admin-pale);color:var(--admin);border:none;font-weight:700;" onclick="setPrice(3)">Edit</button>
+          </div>
+          <div class="approval-actions">
+            <button class="btn btn-green btn-sm" onclick="approveProduct(this,'Raw Forest Honey')">✓ Approve</button>
+            <button class="btn btn-danger btn-sm" onclick="rejectProduct(this)">✕ Reject</button>
+            <button class="btn btn-ghost btn-sm">Details</button>
+          </div>
+        </div>
+      </div>
+
+      <!-- Card 4 -->
+      <div class="approval-card">
+        <div class="approval-img"><img src="https://source.unsplash.com/300x160/?basmati,rice" alt="Organic Basmati Rice" style="width:100%;height:100%;object-fit:cover;"><span class="approval-new-tag">New</span></div>
+        <div class="approval-body">
+          <h4>Organic Basmati Rice (1kg)</h4>
+          <div class="meta">by EarthFirst Stores · Grains · 900 units · <span class="tag cert">Organic ✓</span></div>
+          <div class="approval-status"><span class="status-pill pending">Pending Review</span><span style="font-size:12px;color:var(--g500)">2h ago</span></div>
+          <div class="price-input-row">
+            <input class="price-input" type="number" placeholder="Set selling price (₹)" id="price-4">
+            <button class="btn btn-sm" style="background:var(--admin-pale);color:var(--admin);border:none;font-weight:700;" onclick="setPrice(4)">Set</button>
+          </div>
+          <div class="approval-actions">
+            <button class="btn btn-green btn-sm" onclick="approveProduct(this,'Organic Basmati Rice')">✓ Approve</button>
+            <button class="btn btn-danger btn-sm" onclick="rejectProduct(this)">✕ Reject</button>
+            <button class="btn btn-ghost btn-sm">Details</button>
+          </div>
+        </div>
+      </div>
+
+      <!-- Card 5 -->
+      <div class="approval-card">
+        <div class="approval-img"><img src="https://source.unsplash.com/300x160/?red-chilli,kashmiri" alt="Kashmiri Red Chilli" style="width:100%;height:100%;object-fit:cover;"></div>
+        <div class="approval-body">
+          <h4>Kashmiri Red Chilli Powder</h4>
+          <div class="meta">by VedaOrganic · Spices · 600 units · <span class="tag cert">FSSAI ✓</span></div>
+          <div class="approval-status"><span class="status-pill approved">✓ Approved</span><span style="font-size:12px;color:var(--g500)">3h ago</span></div>
+          <div class="price-input-row">
+            <input class="price-input" type="number" value="229" id="price-5">
+            <button class="btn btn-sm" style="background:var(--admin-pale);color:var(--admin);border:none;font-weight:700;">Edit</button>
+          </div>
+          <div class="approval-actions">
+            <button class="btn btn-ghost btn-sm">✎ Edit Price</button>
+            <button class="btn btn-danger btn-sm">Revoke</button>
+            <button class="btn btn-ghost btn-sm">Details</button>
+          </div>
+        </div>
+      </div>
+
+      <!-- Card 6 -->
+      <div class="approval-card">
+        <div class="approval-img"><img src="https://source.unsplash.com/300x160/?himalayan,salt" alt="Himalayan Pink Salt" style="width:100%;height:100%;object-fit:cover;"><span class="approval-new-tag">New</span></div>
+        <div class="approval-body">
+          <h4>Himalayan Pink Salt (500g)</h4>
+          <div class="meta">by NaturalRoots Farm · Spices · 1200 units · <span class="tag cert">Organic ✓</span></div>
+          <div class="approval-status"><span class="status-pill priced">₹ Price: ₹149</span><span style="font-size:12px;color:var(--g500)">1h ago</span></div>
+          <div class="price-input-row">
+            <input class="price-input" type="number" value="149" id="price-6">
+            <button class="btn btn-sm" style="background:var(--admin-pale);color:var(--admin);border:none;font-weight:700;">Edit</button>
+          </div>
+          <div class="approval-actions">
+            <button class="btn btn-green btn-sm" onclick="approveProduct(this,'Himalayan Pink Salt')">✓ Approve</button>
+            <button class="btn btn-danger btn-sm" onclick="rejectProduct(this)">✕ Reject</button>
+            <button class="btn btn-ghost btn-sm">Details</button>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div><!-- /page-products -->
+
+  <!-- ═══════════════════════════════════════════ -->
+  <!-- PAGE: SELLER MANAGEMENT -->
+  <!-- ═══════════════════════════════════════════ -->
+  <div class="page" id="page-sellers">
+    <div style="display:flex;align-items:center;justify-content:space-between;margin-bottom:20px;">
+      <h2 class="section-title">Seller <span>Management</span></h2>
+      <div class="table-filters">
+        <button class="filter-btn active">All (190)</button>
+        <button class="filter-btn" onclick="filterBtn(this)">Pending (3)</button>
+        <button class="filter-btn" onclick="filterBtn(this)">Active (187)</button>
+        <button class="filter-btn" onclick="filterBtn(this)">Suspended (0)</button>
+      </div>
+    </div>
+
+    <!-- Pending seller registrations -->
+    <div style="margin-bottom:24px;">
+      <h3 style="font-size:15px;font-weight:700;margin-bottom:14px;color:var(--p);">⏳ Awaiting Approval (3)</h3>
+      <div class="three-col" style="margin-bottom:0;">
+        <div class="seller-doc-card">
+          <div style="display:flex;align-items:center;gap:12px;margin-bottom:4px;">
+            <div class="s-mini-avatar" style="width:44px;height:44px;font-size:18px;background:linear-gradient(135deg,#0891b2,#0e7490)">R</div>
+            <div>
+              <strong style="font-size:14px;">Ravi's Organic Farm</strong>
+              <div style="font-size:12px;color:var(--g500);">Pune, Maharashtra</div>
+            </div>
+            <span class="status-pill pending" style="margin-left:auto;">Pending</span>
+          </div>
+          <div class="doc-item"><span class="doc-icon">📋</span><div class="doc-info"><strong>FSSAI License</strong><span>License #12345678</span></div><span class="doc-status ok">Verified</span></div>
+          <div class="doc-item"><span class="doc-icon">📄</span><div class="doc-info"><strong>GST Certificate</strong><span>27ABCDE1234F1Z5</span></div><span class="doc-status ok">Verified</span></div>
+          <div class="doc-item"><span class="doc-icon">🌿</span><div class="doc-info"><strong>Organic Cert</strong><span>NPOP Certified</span></div><span class="doc-status pending">Under Review</span></div>
+          <div style="display:flex;gap:8px;margin-top:4px;">
+            <button class="btn btn-green btn-sm" style="flex:1;justify-content:center;" onclick="showToast('Ravi\'s Organic Farm approved!','green')">Approve</button>
+            <button class="btn btn-danger btn-sm" style="flex:1;justify-content:center;">Reject</button>
+          </div>
+        </div>
+
+        <div class="seller-doc-card">
+          <div style="display:flex;align-items:center;gap:12px;margin-bottom:4px;">
+            <div class="s-mini-avatar" style="width:44px;height:44px;font-size:18px;background:linear-gradient(135deg,#d946ef,#a21caf)">S</div>
+            <div>
+              <strong style="font-size:14px;">Sunanda Dairy</strong>
+              <div style="font-size:12px;color:var(--g500);">Anand, Gujarat</div>
+            </div>
+            <span class="status-pill pending" style="margin-left:auto;">Pending</span>
+          </div>
+          <div class="doc-item"><span class="doc-icon">📋</span><div class="doc-info"><strong>FSSAI License</strong><span>License #98765432</span></div><span class="doc-status ok">Verified</span></div>
+          <div class="doc-item"><span class="doc-icon">📄</span><div class="doc-info"><strong>GST Certificate</strong><span>24XYZAB5678C2D1</span></div><span class="doc-status pending">Under Review</span></div>
+          <div class="doc-item"><span class="doc-icon">🌿</span><div class="doc-info"><strong>Organic Cert</strong><span>Not Uploaded</span></div><span class="doc-status missing">Missing</span></div>
+          <div style="display:flex;gap:8px;margin-top:4px;">
+            <button class="btn btn-green btn-sm" style="flex:1;justify-content:center;" onclick="showToast('Sunanda Dairy approved!','green')">Approve</button>
+            <button class="btn btn-danger btn-sm" style="flex:1;justify-content:center;">Reject</button>
+          </div>
+        </div>
+
+        <div class="seller-doc-card">
+          <div style="display:flex;align-items:center;gap:12px;margin-bottom:4px;">
+            <div class="s-mini-avatar" style="width:44px;height:44px;font-size:18px;">H</div>
+            <div>
+              <strong style="font-size:14px;">HillGrove Farms</strong>
+              <div style="font-size:12px;color:var(--g500);">Ooty, Tamil Nadu</div>
+            </div>
+            <span class="status-pill pending" style="margin-left:auto;">Pending</span>
+          </div>
+          <div class="doc-item"><span class="doc-icon">📋</span><div class="doc-info"><strong>FSSAI License</strong><span>License #11223344</span></div><span class="doc-status ok">Verified</span></div>
+          <div class="doc-item"><span class="doc-icon">📄</span><div class="doc-info"><strong>GST Certificate</strong><span>33HILLG9876H3K7</span></div><span class="doc-status ok">Verified</span></div>
+          <div class="doc-item"><span class="doc-icon">🌿</span><div class="doc-info"><strong>Organic Cert</strong><span>IndoCert Certified</span></div><span class="doc-status ok">Verified</span></div>
+          <div style="display:flex;gap:8px;margin-top:4px;">
+            <button class="btn btn-green btn-sm" style="flex:1;justify-content:center;" onclick="showToast('HillGrove Farms approved!','green')">Approve</button>
+            <button class="btn btn-danger btn-sm" style="flex:1;justify-content:center;">Reject</button>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <!-- All Sellers Table -->
+    <div class="table-card">
+      <div class="table-head">
+        <h3>All Sellers</h3>
+        <button class="btn btn-ghost btn-sm">Export CSV</button>
+      </div>
+      <table>
+        <thead><tr><th>Store</th><th>Location</th><th>Products</th><th>Monthly Revenue</th><th>Rating</th><th>Status</th><th>Actions</th></tr></thead>
+        <tbody>
+          <tr>
+            <td><div class="seller-cell"><div class="s-mini-avatar" style="background:linear-gradient(135deg,var(--g),#2d5a14)">G</div><div><strong>GreenFarm Organics</strong><div style="font-size:12px;color:var(--g500);">greenfarmorgan@mail.com</div></div></div></td>
+            <td>Pune</td><td>47</td><td>₹72,400</td>
+            <td><span class="rating">★ 4.8</span></td>
+            <td><span class="status-pill active">Active</span></td>
+            <td><div class="action-btns"><button class="icon-btn edit">✎</button><button class="icon-btn reject" title="Suspend">⊘</button></div></td>
+          </tr>
+          <tr>
+            <td><div class="seller-cell"><div class="s-mini-avatar">P</div><div><strong>PureHarvest Co.</strong><div style="font-size:12px;color:var(--g500);">pureharvest@mail.com</div></div></div></td>
+            <td>Nashik</td><td>32</td><td>₹58,200</td>
+            <td><span class="rating">★ 4.6</span></td>
+            <td><span class="status-pill active">Active</span></td>
+            <td><div class="action-btns"><button class="icon-btn edit">✎</button><button class="icon-btn reject">⊘</button></div></td>
+          </tr>
+          <tr>
+            <td><div class="seller-cell"><div class="s-mini-avatar" style="background:linear-gradient(135deg,var(--admin),#6d28d9)">N</div><div><strong>NaturalRoots Farm</strong><div style="font-size:12px;color:var(--g500);">naturalroots@mail.com</div></div></div></td>
+            <td>Coimbatore</td><td>28</td><td>₹51,900</td>
+            <td><span class="rating">★ 4.7</span></td>
+            <td><span class="status-pill active">Active</span></td>
+            <td><div class="action-btns"><button class="icon-btn edit">✎</button><button class="icon-btn reject">⊘</button></div></td>
+          </tr>
+          <tr>
+            <td><div class="seller-cell"><div class="s-mini-avatar" style="background:linear-gradient(135deg,var(--earth),#7c2d12)">E</div><div><strong>EarthFirst Stores</strong><div style="font-size:12px;color:var(--g500);">earthfirst@mail.com</div></div></div></td>
+            <td>Bangalore</td><td>61</td><td>₹43,700</td>
+            <td><span class="rating">★ 4.5</span></td>
+            <td><span class="status-pill active">Active</span></td>
+            <td><div class="action-btns"><button class="icon-btn edit">✎</button><button class="icon-btn reject">⊘</button></div></td>
+          </tr>
+          <tr>
+            <td><div class="seller-cell"><div class="s-mini-avatar" style="background:linear-gradient(135deg,#0891b2,#0e7490)">V</div><div><strong>VedaOrganic</strong><div style="font-size:12px;color:var(--g500);">vedaorganic@mail.com</div></div></div></td>
+            <td>Hyderabad</td><td>39</td><td>₹39,200</td>
+            <td><span class="rating">★ 4.9</span></td>
+            <td><span class="status-pill active">Active</span></td>
+            <td><div class="action-btns"><button class="icon-btn edit">✎</button><button class="icon-btn reject">⊘</button></div></td>
+          </tr>
+        </tbody>
+      </table>
+      <div class="pagination">
+        <span class="pagination-info">Showing 1–5 of 187 sellers</span>
+        <div class="pagination-btns">
+          <button class="pg-btn active">1</button>
+          <button class="pg-btn">2</button>
+          <button class="pg-btn">3</button>
+          <button class="pg-btn">→</button>
+        </div>
+      </div>
+    </div>
+  </div><!-- /page-sellers -->
+
+  <!-- ═══════════════════════════════════════════ -->
+  <!-- PAGE: HERO BANNER MANAGER -->
+  <!-- ═══════════════════════════════════════════ -->
+  <div class="page" id="page-promos">
+
+    <div style="display:flex;align-items:center;justify-content:space-between;margin-bottom:24px;">
+      <div>
+        <h2 class="section-title" style="margin-bottom:4px;">Hero Slider <span>Manager</span></h2>
+        <p style="font-size:13px;color:var(--g500);">Add, edit, reorder or delete slides. Publish to update the buyer storefront instantly.</p>
+      </div>
+      <div style="display:flex;gap:10px;">
+        <button class="btn btn-ghost btn-sm" onclick="addNewBanner()">+ Add Slide</button>
+        <button class="btn btn-admin" onclick="publishAllBanners()">🚀 Publish All</button>
+      </div>
+    </div>
+
+    <!-- SLIDE CARDS LIST -->
+    <div id="bannerCardsList" style="display:flex;flex-direction:column;gap:14px;margin-bottom:24px;"></div>
+
+    <!-- EDITOR PANEL -->
+    <div id="bannerEditorPanel" style="display:none;">
+      <div style="display:flex;align-items:center;justify-content:space-between;margin-bottom:16px;">
+        <h3 style="font-size:16px;font-weight:700;">✏️ Editing Slide <span id="editSlideLabel"></span></h3>
+        <div style="display:flex;gap:8px;">
+          <button class="btn btn-ghost btn-sm" onclick="cancelEdit()">Cancel</button>
+          <button class="btn btn-green btn-sm" onclick="saveCurrentEdit()">✓ Save Slide</button>
+        </div>
+      </div>
+
+      <!-- LIVE PREVIEW -->
+      <div class="chart-card" style="margin-bottom:18px;padding:0;overflow:hidden;">
+        <div style="padding:12px 18px;border-bottom:1px solid var(--g200);display:flex;align-items:center;gap:8px;">
+          <span style="width:9px;height:9px;background:#22C55E;border-radius:50%;display:inline-block;"></span>
+          <span style="font-size:13px;font-weight:700;color:var(--g700);">Live Preview</span>
+          <span style="font-size:12px;color:var(--g500);">— updates as you type</span>
+        </div>
+        <div id="bannerPreview" style="position:relative;min-height:240px;display:flex;align-items:center;background-size:cover;background-position:center;overflow:hidden;">
+          <div id="previewOverlay" style="position:absolute;inset:0;"></div>
+          <div style="position:relative;z-index:1;padding:28px 36px;max-width:600px;">
+            <div style="display:inline-flex;align-items:center;gap:6px;border:1.5px solid rgba(255,255,255,.35);border-radius:30px;padding:4px 12px;font-size:11px;font-weight:700;color:#fff;margin-bottom:12px;letter-spacing:.4px;text-transform:uppercase;">
+              <span style="width:6px;height:6px;background:#4ADE80;border-radius:50%;display:inline-block;"></span>100% Certified Organic
+            </div>
+            <h2 id="eprev-headline" style="font-family:'Playfair Display',serif;font-size:clamp(20px,2.5vw,36px);font-weight:900;color:#fff;line-height:1.1;margin-bottom:8px;letter-spacing:-.5px;"></h2>
+            <p style="font-size:14px;font-weight:600;color:#fff;margin-bottom:5px;"><span id="eprev-highlight" style="font-weight:800;padding:2px 10px;border-radius:4px;font-size:14px;"></span></p>
+            <p id="eprev-sub" style="font-size:13px;color:rgba(255,255,255,.85);margin-bottom:8px;"></p>
+            <div id="eprev-urgency" style="display:inline-flex;align-items:center;gap:6px;border-radius:5px;padding:6px 14px;font-size:12px;font-weight:700;color:#fff;margin-bottom:16px;"></div>
+            <div style="display:flex;gap:10px;flex-wrap:wrap;">
+              <button id="eprev-btn1" style="background:#F97316;color:#fff;border:none;border-radius:8px;padding:9px 18px;font-size:13px;font-weight:700;cursor:default;"></button>
+              <button id="eprev-btn2" style="background:transparent;border:2px solid rgba(255,255,255,.6);color:#fff;border-radius:8px;padding:9px 18px;font-size:13px;font-weight:700;cursor:default;"></button>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <!-- FIELDS -->
+      <div style="display:grid;grid-template-columns:1fr 1fr;gap:18px;">
+        <!-- LEFT -->
+        <div class="chart-card" style="display:flex;flex-direction:column;gap:16px;">
+          <h4 style="font-size:13.5px;font-weight:700;padding-bottom:10px;border-bottom:1px solid var(--g200);">📝 Text Content</h4>
+          <div class="form-row" style="margin:0;">
+            <label>Headline</label>
+            <input type="text" id="fe-headline" oninput="refreshPreview()" placeholder="e.g. Get a [em]FREE[/em] Basket">
+            <div style="font-size:11px;color:var(--g500);margin-top:3px;">Use [em]word[/em] to highlight in orange</div>
+          </div>
+          <div class="form-row" style="margin:0;">
+            <label>Highlight Pill Text</label>
+            <input type="text" id="fe-highlight" oninput="refreshPreview()" placeholder="eco-friendly basket worth ₹500">
+          </div>
+          <div class="form-row" style="margin:0;">
+            <label>Sub-text</label>
+            <input type="text" id="fe-sub" oninput="refreshPreview()" placeholder="on orders above ₹2500 · …">
+          </div>
+          <div class="form-row" style="margin:0;">
+            <label>Urgency Strip</label>
+            <input type="text" id="fe-urgency" oninput="refreshPreview()" placeholder="🔥 Limited offer!">
+            <label style="margin-top:8px;font-size:13px;display:flex;align-items:center;gap:6px;cursor:pointer;font-weight:500;">
+              <input type="checkbox" id="fe-urgency-show" onchange="refreshPreview()" style="width:auto;"> Show urgency strip
+            </label>
+          </div>
+          <div style="display:grid;grid-template-columns:1fr 1fr;gap:10px;">
+            <div class="form-row" style="margin:0;"><label>Primary Button Label</label><input type="text" id="fe-btn1" oninput="refreshPreview()" placeholder="🛒 Shop Now"></div>
+            <div class="form-row" style="margin:0;"><label>Secondary Button Label</label><input type="text" id="fe-btn2" oninput="refreshPreview()" placeholder="🌿 Explore Stores"></div>
+          </div>
+          <div style="display:grid;grid-template-columns:1fr 1fr;gap:10px;margin-top:10px;">
+            <div class="form-row" style="margin:0;"><label>Primary Button Link</label><input type="text" id="fe-btn1-link" placeholder="browse  or  https://…"><div style="font-size:11px;color:var(--g500);margin-top:3px;">Internal page id <em>or</em> full URL</div></div>
+            <div class="form-row" style="margin:0;"><label>Secondary Button Link</label><input type="text" id="fe-btn2-link" placeholder="stores  or  https://…"></div>
+          </div>
+        </div>
+        <!-- RIGHT -->
+        <div class="chart-card" style="display:flex;flex-direction:column;gap:16px;">
+          <h4 style="font-size:13.5px;font-weight:700;padding-bottom:10px;border-bottom:1px solid var(--g200);">🎨 Visual Settings</h4>
+          <!-- Upload zone -->
+          <div class="form-row" style="margin:0;">
+            <label>Background Image</label>
+            <div id="feDropZone" onclick="document.getElementById('feFileInput').click()" ondragover="event.preventDefault();this.style.borderColor='var(--p)'" ondragleave="this.style.borderColor='var(--g200)'" ondrop="handleFeDrop(event)" style="border:2px dashed var(--g200);border-radius:var(--rs);padding:14px;text-align:center;cursor:pointer;background:var(--g100);transition:all .2s;margin-bottom:8px;">
+              <div style="font-size:22px;margin-bottom:4px;">🖼️</div>
+              <div style="font-size:12.5px;font-weight:700;color:var(--g700);">Click to upload or drag & drop</div>
+              <div style="font-size:11px;color:var(--g500);margin-top:2px;">JPG, PNG, WebP · max 8MB</div>
+            </div>
+            <input type="file" id="feFileInput" accept="image/*" style="display:none;" onchange="handleFeFile(this)">
+            <div style="display:flex;align-items:center;gap:8px;margin-bottom:8px;"><div style="flex:1;height:1px;background:var(--g200);"></div><span style="font-size:11px;color:var(--g500);font-weight:600;">OR URL</span><div style="flex:1;height:1px;background:var(--g200);"></div></div>
+            <input type="text" id="fe-bgurl" oninput="refreshPreview()" placeholder="https://… or leave blank for gradient">
+            <div id="feThumbWrap" style="margin-top:8px;border-radius:var(--rs);overflow:hidden;height:70px;display:none;position:relative;">
+              <img id="feThumb" style="width:100%;height:70px;object-fit:cover;display:block;" alt="preview">
+              <button onclick="clearFeImage()" style="position:absolute;top:5px;right:5px;width:22px;height:22px;border-radius:50%;background:rgba(0,0,0,.55);color:#fff;border:none;cursor:pointer;font-size:12px;display:flex;align-items:center;justify-content:center;">✕</button>
+            </div>
+          </div>
+          <div style="display:grid;grid-template-columns:1fr 1fr;gap:10px;">
+            <div class="form-row" style="margin:0;"><label>Overlay</label>
+              <select id="fe-overlay" onchange="refreshPreview()">
+                <option value="none">None (image as-is)</option>
+                <option value="light">Light (40%)</option>
+                <option value="medium" selected>Medium (65%)</option>
+                <option value="dark">Dark (78%)</option>
+              </select>
+            </div>
+            <div class="form-row" style="margin:0;"><label>Height</label>
+              <select id="fe-height" onchange="refreshPreview()">
+                <option value="380px">Compact</option>
+                <option value="480px">Medium</option>
+                <option value="560px" selected>Tall</option>
+                <option value="100vh">Full Screen</option>
+              </select>
+            </div>
+            <div class="form-row" style="margin:0;"><label>Highlight Colour</label>
+              <select id="fe-hlcolor" onchange="refreshPreview()">
+                <option value="#F97316" selected>Orange</option>
+                <option value="#3D7A1F">Green</option>
+                <option value="#7C3AED">Purple</option>
+                <option value="#DC2626">Red</option>
+                <option value="#1D4ED8">Blue</option>
+              </select>
+            </div>
+            <div class="form-row" style="margin:0;"><label>Urgency Colour</label>
+              <select id="fe-urgcolor" onchange="refreshPreview()">
+                <option value="#3D7A1F" selected>Green</option>
+                <option value="#F97316">Orange</option>
+                <option value="#DC2626">Red</option>
+                <option value="#7C3AED">Purple</option>
+              </select>
+            </div>
+          </div>
+          <div>
+            <div style="font-size:12px;font-weight:600;color:var(--g700);margin-bottom:8px;">Quick Themes</div>
+            <div style="display:flex;gap:8px;flex-wrap:wrap;">
+              <button onclick="applyBannerTheme('harvest')" style="padding:5px 12px;border-radius:20px;border:1.5px solid var(--g200);background:#FFF7ED;color:#C2410C;font-size:12px;font-weight:700;cursor:pointer;">🍊 Harvest</button>
+              <button onclick="applyBannerTheme('forest')" style="padding:5px 12px;border-radius:20px;border:1.5px solid var(--g200);background:#F0FDF4;color:#3D7A1F;font-size:12px;font-weight:700;cursor:pointer;">🌿 Forest</button>
+              <button onclick="applyBannerTheme('festive')" style="padding:5px 12px;border-radius:20px;border:1.5px solid var(--g200);background:#FEE2E2;color:#DC2626;font-size:12px;font-weight:700;cursor:pointer;">🎉 Festive</button>
+              <button onclick="applyBannerTheme('cool')" style="padding:5px 12px;border-radius:20px;border:1.5px solid var(--g200);background:#EDE9FE;color:#7C3AED;font-size:12px;font-weight:700;cursor:pointer;">💜 Cool</button>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <div style="display:flex;justify-content:flex-end;gap:10px;margin-top:16px;">
+        <button class="btn btn-ghost btn-sm" onclick="cancelEdit()">Cancel</button>
+        <button class="btn btn-green" onclick="saveCurrentEdit()">✓ Save Slide</button>
+      </div>
+    </div>
+
+    <!-- PUBLISH BAR -->
+    <div style="background:var(--admin-pale);border:1.5px solid #C4B5FD;border-radius:var(--r);padding:16px 22px;display:flex;align-items:center;gap:16px;margin-top:20px;">
+      <span style="font-size:22px;">📢</span>
+      <div style="flex:1;">
+        <div style="font-size:14px;font-weight:700;color:var(--admin);">Ready to go live?</div>
+        <div style="font-size:12.5px;color:var(--g500);margin-top:2px;">Publish pushes all slides to the buyer storefront. Slides auto-rotate every 5 seconds.</div>
+      </div>
+      <button class="btn btn-admin" onclick="publishAllBanners()" style="flex-shrink:0;">🚀 Publish All Slides</button>
+    </div>
+
+  </div><!-- /page-promos -->
+
+  <!-- ═══════════════════════════════════════════ -->
+  <!-- PAGE: ORDERS -->
+  <!-- ═══════════════════════════════════════════ -->
+  <div class="page" id="page-orders">
+    <div style="display:flex;align-items:center;justify-content:space-between;margin-bottom:20px;">
+      <h2 class="section-title">Order <span>Management</span></h2>
+      <button class="btn btn-ghost btn-sm">Export Report</button>
+    </div>
+    <div class="table-card">
+      <div class="table-head">
+        <h3>All Orders</h3>
+        <div class="table-filters">
+          <button class="filter-btn active">All</button>
+          <button class="filter-btn" onclick="filterBtn(this)">Pending</button>
+          <button class="filter-btn" onclick="filterBtn(this)">In Transit</button>
+          <button class="filter-btn" onclick="filterBtn(this)">Delivered</button>
+          <button class="filter-btn" onclick="filterBtn(this)">Cancelled</button>
+        </div>
+      </div>
+      <table>
+        <thead><tr><th>Order ID</th><th>Buyer</th><th>Seller</th><th>Items</th><th>Amount</th><th>Date</th><th>Status</th><th>Actions</th></tr></thead>
+        <tbody>
+          <tr><td><strong>#ORG-9847</strong></td><td>Priya Sharma</td><td>GreenFarm Co.</td><td>3 items</td><td>₹842</td><td>Today 11:20</td><td><span class="status-pill active">In Transit</span></td><td><div class="action-btns"><button class="icon-btn edit">👁</button></div></td></tr>
+          <tr><td><strong>#ORG-9846</strong></td><td>Rahul Mehra</td><td>PureHarvest Co.</td><td>1 item</td><td>₹219</td><td>Today 10:54</td><td><span class="status-pill pending">Pending</span></td><td><div class="action-btns"><button class="icon-btn approve">✓</button><button class="icon-btn reject">✕</button></div></td></tr>
+          <tr><td><strong>#ORG-9845</strong></td><td>Anita Rao</td><td>VedaOrganic</td><td>5 items</td><td>₹1,240</td><td>Today 09:30</td><td><span class="status-pill approved">Delivered</span></td><td><div class="action-btns"><button class="icon-btn edit">👁</button></div></td></tr>
+          <tr><td><strong>#ORG-9844</strong></td><td>Kiran Patel</td><td>NaturalRoots</td><td>2 items</td><td>₹560</td><td>Yesterday</td><td><span class="status-pill approved">Delivered</span></td><td><div class="action-btns"><button class="icon-btn edit">👁</button></div></td></tr>
+          <tr><td><strong>#ORG-9843</strong></td><td>Suresh Kumar</td><td>EarthFirst</td><td>4 items</td><td>₹978</td><td>Yesterday</td><td><span class="status-pill rejected">Cancelled</span></td><td><div class="action-btns"><button class="icon-btn edit">👁</button><button class="icon-btn approve" title="Refund">↩</button></div></td></tr>
+        </tbody>
+      </table>
+      <div class="pagination">
+        <span class="pagination-info">Showing 1–5 of 2,341 orders</span>
+        <div class="pagination-btns">
+          <button class="pg-btn active">1</button>
+          <button class="pg-btn">2</button>
+          <button class="pg-btn">3</button>
+          <button class="pg-btn">…</button>
+          <button class="pg-btn">468</button>
+          <button class="pg-btn">→</button>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- ═══════════════════════════════════════════ -->
+  <!-- PAGE: COUPONS -->
+  <!-- ═══════════════════════════════════════════ -->
+  <div class="page" id="page-coupons">
+    <div style="display:flex;align-items:center;justify-content:space-between;margin-bottom:20px;">
+      <h2 class="section-title">Coupons & <span>Offers</span></h2>
+      <button class="btn btn-primary" onclick="openCouponModal()">+ Create Coupon</button>
+    </div>
+    <div class="table-card">
+      <div class="table-head"><h3>Active Coupons</h3></div>
+      <table>
+        <thead><tr><th>Code</th><th>Discount</th><th>Min Order</th><th>Usage</th><th>Expiry</th><th>Status</th><th>Actions</th></tr></thead>
+        <tbody>
+          <tr><td><strong>ORGANIC20</strong></td><td>20% off</td><td>₹300</td><td>142/500</td><td>Jun 30, 2026</td><td><span class="status-pill active">Active</span></td><td><div class="action-btns"><button class="icon-btn edit">✎</button><button class="icon-btn reject">⊘</button></div></td></tr>
+          <tr><td><strong>FIRST100</strong></td><td>₹100 off</td><td>₹500</td><td>38/200</td><td>Dec 31, 2026</td><td><span class="status-pill active">Active</span></td><td><div class="action-btns"><button class="icon-btn edit">✎</button><button class="icon-btn reject">⊘</button></div></td></tr>
+          <tr><td><strong>SUMMER15</strong></td><td>15% off</td><td>₹200</td><td>500/500</td><td>May 31, 2026</td><td><span class="status-pill rejected">Expired</span></td><td><div class="action-btns"><button class="icon-btn edit">✎</button><button class="icon-btn reject">🗑</button></div></td></tr>
+          <tr><td><strong>DAIRY50</strong></td><td>₹50 off</td><td>₹250</td><td>0/300</td><td>Jul 15, 2026</td><td><span class="status-pill pending">Scheduled</span></td><td><div class="action-btns"><button class="icon-btn approve">✓</button><button class="icon-btn reject">✕</button></div></td></tr>
+        </tbody>
+      </table>
+    </div>
+  </div>
+
+  <!-- ═══════════════════════════════════════════ -->
+  <!-- PAGE: DISPUTES -->
+  <!-- ═══════════════════════════════════════════ -->
+  <div class="page" id="page-disputes">
+    <h2 class="section-title" style="margin-bottom:20px;">Disputes & <span>Refunds</span></h2>
+    <div class="table-card">
+      <div class="table-head"><h3>Open Disputes</h3><span class="status-pill pending" style="font-size:13px;">4 open</span></div>
+      <table>
+        <thead><tr><th>Ticket</th><th>Buyer</th><th>Order</th><th>Issue</th><th>Amount</th><th>Filed</th><th>Actions</th></tr></thead>
+        <tbody>
+          <tr><td><strong>#DSP-112</strong></td><td>Priya Sharma</td><td>#ORG-9820</td><td>Item not delivered</td><td>₹560</td><td>Today</td><td><div class="action-btns"><button class="icon-btn approve" title="Refund" onclick="showToast('Refund processed for ₹560','green')">₹↩</button><button class="icon-btn edit">✎</button></div></td></tr>
+          <tr><td><strong>#DSP-111</strong></td><td>Kiran Patel</td><td>#ORG-9810</td><td>Wrong product sent</td><td>₹320</td><td>Yesterday</td><td><div class="action-btns"><button class="icon-btn approve" title="Refund">₹↩</button><button class="icon-btn edit">✎</button></div></td></tr>
+          <tr><td><strong>#DSP-110</strong></td><td>Suresh Kumar</td><td>#ORG-9800</td><td>Quality issue</td><td>₹892</td><td>2 days ago</td><td><div class="action-btns"><button class="icon-btn approve" title="Refund">₹↩</button><button class="icon-btn edit">✎</button></div></td></tr>
+          <tr><td><strong>#DSP-109</strong></td><td>Anita Rao</td><td>#ORG-9798</td><td>Partial order</td><td>₹180</td><td>3 days ago</td><td><div class="action-btns"><button class="icon-btn approve" title="Refund">₹↩</button><button class="icon-btn reject">✕</button></div></td></tr>
+        </tbody>
+      </table>
+    </div>
+  </div>
+
+  <!-- ═══════════════════════════════════════════ -->
+  <!-- PAGE: CATEGORIES -->
+  <!-- ═══════════════════════════════════════════ -->
+  <div class="page" id="page-categories">
+    <div style="display:flex;align-items:center;justify-content:space-between;margin-bottom:20px;">
+      <h2 class="section-title">Category <span>Management</span></h2>
+      <button class="btn btn-primary" onclick="showToast('Category editor coming soon!','info')">+ Add Category</button>
+    </div>
+    <div class="three-col">
+      <div class="mini-card" style="display:flex;flex-direction:column;gap:10px;">
+        <div style="display:flex;align-items:center;gap:12px;padding:12px;background:var(--p-pale);border-radius:var(--rs);"><span style="width:40px;height:40px;border-radius:8px;overflow:hidden;flex-shrink:0;"><img src="https://source.unsplash.com/40x40/?broccoli,vegetables" alt="Vegetables" style="width:100%;height:100%;object-fit:cover;display:block;"></span><div><strong>Vegetables</strong><div style="font-size:12px;color:var(--g500);">342 products · 48 sellers</div></div><div class="action-btns" style="margin-left:auto"><button class="icon-btn edit">✎</button></div></div>
+        <div style="display:flex;align-items:center;gap:12px;padding:12px;background:var(--g-pale);border-radius:var(--rs);"><span style="width:40px;height:40px;border-radius:8px;overflow:hidden;flex-shrink:0;"><img src="https://source.unsplash.com/40x40/?fresh,fruits" alt="Fruits" style="width:100%;height:100%;object-fit:cover;display:block;"></span><div><strong>Fruits</strong><div style="font-size:12px;color:var(--g500);">218 products · 36 sellers</div></div><div class="action-btns" style="margin-left:auto"><button class="icon-btn edit">✎</button></div></div>
+        <div style="display:flex;align-items:center;gap:12px;padding:12px;background:var(--admin-pale);border-radius:var(--rs);"><span style="width:40px;height:40px;border-radius:8px;overflow:hidden;flex-shrink:0;"><img src="https://source.unsplash.com/40x40/?milk,dairy" alt="Dairy" style="width:100%;height:100%;object-fit:cover;display:block;"></span><div><strong>Dairy</strong><div style="font-size:12px;color:var(--g500);">127 products · 22 sellers</div></div><div class="action-btns" style="margin-left:auto"><button class="icon-btn edit">✎</button></div></div>
+        <div style="display:flex;align-items:center;gap:12px;padding:12px;background:var(--earth-l);border-radius:var(--rs);"><span style="width:40px;height:40px;border-radius:8px;overflow:hidden;flex-shrink:0;"><img src="https://source.unsplash.com/40x40/?rice,organic" alt="Organic Rice" style="width:100%;height:100%;object-fit:cover;display:block;"></span><div><strong>Organic Rice</strong><div style="font-size:12px;color:var(--g500);">89 products · 19 sellers</div></div><div class="action-btns" style="margin-left:auto"><button class="icon-btn edit">✎</button></div></div>
+      </div>
+      <div class="mini-card" style="display:flex;flex-direction:column;gap:10px;">
+        <div style="display:flex;align-items:center;gap:12px;padding:12px;background:var(--p-pale);border-radius:var(--rs);"><span style="width:40px;height:40px;border-radius:8px;overflow:hidden;flex-shrink:0;"><img src="https://source.unsplash.com/40x40/?red-chilli,spice" alt="Spices" style="width:100%;height:100%;object-fit:cover;display:block;"></span><div><strong>Spices</strong><div style="font-size:12px;color:var(--g500);">201 products · 31 sellers</div></div><div class="action-btns" style="margin-left:auto"><button class="icon-btn edit">✎</button></div></div>
+        <div style="display:flex;align-items:center;gap:12px;padding:12px;background:var(--g-pale);border-radius:var(--rs);"><span style="width:40px;height:40px;border-radius:8px;overflow:hidden;flex-shrink:0;"><img src="https://source.unsplash.com/40x40/?herbs,moringa" alt="Herbal Products" style="width:100%;height:100%;object-fit:cover;display:block;"></span><div><strong>Herbal Products</strong><div style="font-size:12px;color:var(--g500);">156 products · 27 sellers</div></div><div class="action-btns" style="margin-left:auto"><button class="icon-btn edit">✎</button></div></div>
+        <div style="display:flex;align-items:center;gap:12px;padding:12px;background:var(--admin-pale);border-radius:var(--rs);"><span style="width:40px;height:40px;border-radius:8px;overflow:hidden;flex-shrink:0;"><img src="https://source.unsplash.com/40x40/?millet,grain" alt="Millets" style="width:100%;height:100%;object-fit:cover;display:block;"></span><div><strong>Millets</strong><div style="font-size:12px;color:var(--g500);">74 products · 14 sellers</div></div><div class="action-btns" style="margin-left:auto"><button class="icon-btn edit">✎</button></div></div>
+        <div style="display:flex;align-items:center;gap:12px;padding:12px;background:var(--earth-l);border-radius:var(--rs);"><span style="width:40px;height:40px;border-radius:8px;overflow:hidden;flex-shrink:0;"><img src="https://source.unsplash.com/40x40/?honey,jar" alt="Natural Sweeteners" style="width:100%;height:100%;object-fit:cover;display:block;"></span><div><strong>Natural Sweeteners</strong><div style="font-size:12px;color:var(--g500);">62 products · 11 sellers</div></div><div class="action-btns" style="margin-left:auto"><button class="icon-btn edit">✎</button></div></div>
+      </div>
+      <div class="mini-card">
+        <h4>Commission Rates by Category</h4>
+        <div style="display:flex;flex-direction:column;gap:0;">
+          <div class="commission-row"><label>Vegetables</label><input type="number" value="8"> <span style="font-size:13px;color:var(--g500)">%</span></div>
+          <div class="commission-row"><label>Fruits</label><input type="number" value="10"> <span style="font-size:13px;color:var(--g500)">%</span></div>
+          <div class="commission-row"><label>Dairy</label><input type="number" value="7"> <span style="font-size:13px;color:var(--g500)">%</span></div>
+          <div class="commission-row"><label>Grains / Rice</label><input type="number" value="6"> <span style="font-size:13px;color:var(--g500)">%</span></div>
+          <div class="commission-row"><label>Spices</label><input type="number" value="12"> <span style="font-size:13px;color:var(--g500)">%</span></div>
+          <div class="commission-row"><label>Herbal</label><input type="number" value="9"> <span style="font-size:13px;color:var(--g500)">%</span></div>
+        </div>
+        <div style="margin-top:14px;"><button class="btn btn-primary btn-sm" onclick="showToast('Commission rates saved!','green')">Save Changes</button></div>
+      </div>
+    </div>
+  </div>
+
+  <!-- ═══════════════════════════════════════════ -->
+  <!-- PAGE: ANALYTICS -->
+  <!-- ═══════════════════════════════════════════ -->
+  <div class="page" id="page-analytics">
+    <h2 class="section-title" style="margin-bottom:20px;">Analytics & <span>Reports</span></h2>
+    <div class="kpi-strip">
+      <div class="kpi-card"><div class="kpi-val">₹4.82L</div><div class="kpi-label">Revenue MTD</div><div class="kpi-trend up">↑ 18.4%</div></div>
+      <div class="kpi-card"><div class="kpi-val">2,341</div><div class="kpi-label">Orders MTD</div><div class="kpi-trend up">↑ 11.2%</div></div>
+      <div class="kpi-card"><div class="kpi-val">68.4%</div><div class="kpi-label">Conversion Rate</div><div class="kpi-trend up">↑ 4.2%</div></div>
+      <div class="kpi-card"><div class="kpi-val">₹206</div><div class="kpi-label">Avg Order Value</div><div class="kpi-trend down">↓ 2.1%</div></div>
+      <div class="kpi-card"><div class="kpi-val">1,847</div><div class="kpi-label">Live Products</div><div class="kpi-trend up">↑ 34</div></div>
+      <div class="kpi-card"><div class="kpi-val">4.7★</div><div class="kpi-label">Platform Rating</div><div class="kpi-trend up">↑ 0.1</div></div>
+    </div>
+
+    <div class="charts-row">
+      <div class="chart-card">
+        <div class="chart-head"><h3>Revenue Trend (Last 7 Weeks)</h3></div>
+        <svg class="line-chart-svg" viewBox="0 0 600 160">
+          <defs>
+            <linearGradient id="grad1" x1="0" y1="0" x2="0" y2="1">
+              <stop offset="0%" stop-color="#F97316" stop-opacity="0.25"/>
+              <stop offset="100%" stop-color="#F97316" stop-opacity="0.02"/>
+            </linearGradient>
+          </defs>
+          <!-- Grid lines -->
+          <line x1="0" y1="40" x2="600" y2="40" stroke="#EEE9E0" stroke-width="1"/>
+          <line x1="0" y1="80" x2="600" y2="80" stroke="#EEE9E0" stroke-width="1"/>
+          <line x1="0" y1="120" x2="600" y2="120" stroke="#EEE9E0" stroke-width="1"/>
+          <!-- Area -->
+          <path d="M20 130 L110 110 L200 90 L290 70 L380 55 L470 35 L560 20 L560 155 L20 155 Z" fill="url(#grad1)"/>
+          <!-- Line -->
+          <polyline points="20,130 110,110 200,90 290,70 380,55 470,35 560,20" fill="none" stroke="#F97316" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"/>
+          <!-- Dots -->
+          <circle cx="20" cy="130" r="4" fill="#F97316"/>
+          <circle cx="110" cy="110" r="4" fill="#F97316"/>
+          <circle cx="200" cy="90" r="4" fill="#F97316"/>
+          <circle cx="290" cy="70" r="4" fill="#F97316"/>
+          <circle cx="380" cy="55" r="4" fill="#F97316"/>
+          <circle cx="470" cy="35" r="4" fill="#F97316"/>
+          <circle cx="560" cy="20" r="5" fill="#F97316" stroke="#fff" stroke-width="2"/>
+          <!-- Labels -->
+          <text x="20" y="155" font-size="11" fill="#8C8070" text-anchor="middle" font-family="DM Sans">W1</text>
+          <text x="110" y="155" font-size="11" fill="#8C8070" text-anchor="middle" font-family="DM Sans">W2</text>
+          <text x="200" y="155" font-size="11" fill="#8C8070" text-anchor="middle" font-family="DM Sans">W3</text>
+          <text x="290" y="155" font-size="11" fill="#8C8070" text-anchor="middle" font-family="DM Sans">W4</text>
+          <text x="380" y="155" font-size="11" fill="#8C8070" text-anchor="middle" font-family="DM Sans">W5</text>
+          <text x="470" y="155" font-size="11" fill="#8C8070" text-anchor="middle" font-family="DM Sans">W6</text>
+          <text x="560" y="155" font-size="11" fill="#8C8070" text-anchor="middle" font-family="DM Sans">W7</text>
+        </svg>
+      </div>
+
+      <div class="chart-card">
+        <div class="chart-head"><h3>Orders by Status</h3></div>
+        <div style="display:flex;flex-direction:column;gap:14px;">
+          <div><div style="display:flex;justify-content:space-between;margin-bottom:5px;"><span style="font-size:13px;font-weight:600;">Delivered</span><span style="font-size:13px;font-weight:700;color:var(--g)">1,820 (78%)</span></div><div class="progress-bar"><div class="progress-fill green" style="width:78%"></div></div></div>
+          <div><div style="display:flex;justify-content:space-between;margin-bottom:5px;"><span style="font-size:13px;font-weight:600;">In Transit</span><span style="font-size:13px;font-weight:700;color:var(--admin)">312 (13%)</span></div><div class="progress-bar"><div class="progress-fill purple" style="width:13%"></div></div></div>
+          <div><div style="display:flex;justify-content:space-between;margin-bottom:5px;"><span style="font-size:13px;font-weight:600;">Pending</span><span style="font-size:13px;font-weight:700;color:var(--p)">150 (6%)</span></div><div class="progress-bar"><div class="progress-fill" style="width:6%"></div></div></div>
+          <div><div style="display:flex;justify-content:space-between;margin-bottom:5px;"><span style="font-size:13px;font-weight:600;">Cancelled</span><span style="font-size:13px;font-weight:700;color:#DC2626">59 (3%)</span></div><div class="progress-bar"><div class="progress-fill" style="width:3%;background:#DC2626"></div></div></div>
+        </div>
+        <div style="margin-top:20px;padding-top:16px;border-top:1px solid var(--g200);">
+          <div style="font-size:13px;color:var(--g500);margin-bottom:10px;font-weight:600;">Most Viewed Products</div>
+          <div style="display:flex;flex-direction:column;gap:8px;">
+            <div style="display:flex;justify-content:space-between;font-size:13px;align-items:center;"><span style="display:flex;align-items:center;gap:7px;"><img src="https://source.unsplash.com/20x20/?milk,organic" style="width:20px;height:20px;object-fit:cover;border-radius:4px;" alt="">A2 Cow Milk (1L)</span><strong>4,210 views</strong></div>
+            <div style="display:flex;justify-content:space-between;font-size:13px;align-items:center;"><span style="display:flex;align-items:center;gap:7px;"><img src="https://source.unsplash.com/20x20/?honey,jar" style="width:20px;height:20px;object-fit:cover;border-radius:4px;" alt="">Raw Forest Honey</span><strong>3,840 views</strong></div>
+            <div style="display:flex;justify-content:space-between;font-size:13px;align-items:center;"><span style="display:flex;align-items:center;gap:7px;"><img src="https://source.unsplash.com/20x20/?broccoli,organic" style="width:20px;height:20px;object-fit:cover;border-radius:4px;" alt="">Organic Broccoli</span><strong>2,990 views</strong></div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- ═══════════════════════════════════════════ -->
+  <!-- PAGE: SETTINGS -->
+  <!-- ═══════════════════════════════════════════ -->
+  <div class="page" id="page-settings">
+    <h2 class="section-title" style="margin-bottom:20px;">Platform <span>Settings</span></h2>
+    <div class="settings-grid">
+      <div class="settings-card">
+        <h3>General Settings</h3>
+        <div class="setting-row"><div><div class="setting-label">Maintenance Mode</div><div class="setting-sub">Take the marketplace offline temporarily</div></div><label class="toggle"><input type="checkbox"><span class="toggle-slider"></span></label></div>
+        <div class="setting-row"><div><div class="setting-label">New Seller Registrations</div><div class="setting-sub">Allow new sellers to sign up</div></div><label class="toggle"><input type="checkbox" checked><span class="toggle-slider"></span></label></div>
+        <div class="setting-row"><div><div class="setting-label">Auto-approve Verified Sellers</div><div class="setting-sub">Auto-approve sellers with all docs verified</div></div><label class="toggle"><input type="checkbox"><span class="toggle-slider"></span></label></div>
+        <div class="setting-row"><div><div class="setting-label">Real-time Notifications</div><div class="setting-sub">Push alerts for new orders and approvals</div></div><label class="toggle"><input type="checkbox" checked><span class="toggle-slider"></span></label></div>
+        <div class="setting-row"><div><div class="setting-label">COD Payments</div><div class="setting-sub">Allow cash on delivery option for buyers</div></div><label class="toggle"><input type="checkbox" checked><span class="toggle-slider"></span></label></div>
+      </div>
+
+      <div class="settings-card">
+        <h3>Commission & Pricing</h3>
+        <div class="commission-row"><label>Platform Commission (Default)</label><input type="number" value="10"> <span style="font-size:13px;color:var(--g500)">%</span></div>
+        <div class="commission-row"><label>Min Order Amount (₹)</label><input type="number" value="99"></div>
+        <div class="commission-row"><label>Free Delivery Above (₹)</label><input type="number" value="299"></div>
+        <div class="commission-row"><label>Max Delivery Distance (km)</label><input type="number" value="25"></div>
+        <div style="margin-top:14px;"><button class="btn btn-primary btn-sm" onclick="showToast('Settings saved successfully!','green')">Save Settings</button></div>
+      </div>
+
+      <div class="settings-card">
+        <h3>Notification Preferences</h3>
+        <div class="setting-row"><div><div class="setting-label">Email on New Product</div></div><label class="toggle"><input type="checkbox" checked><span class="toggle-slider"></span></label></div>
+        <div class="setting-row"><div><div class="setting-label">Email on New Seller</div></div><label class="toggle"><input type="checkbox" checked><span class="toggle-slider"></span></label></div>
+        <div class="setting-row"><div><div class="setting-label">Daily Revenue Report</div></div><label class="toggle"><input type="checkbox" checked><span class="toggle-slider"></span></label></div>
+        <div class="setting-row"><div><div class="setting-label">Dispute Alerts</div></div><label class="toggle"><input type="checkbox" checked><span class="toggle-slider"></span></label></div>
+        <div class="setting-row"><div><div class="setting-label">Weekly Analytics Email</div></div><label class="toggle"><input type="checkbox"><span class="toggle-slider"></span></label></div>
+      </div>
+
+      <div class="settings-card">
+        <h3>Admin Access</h3>
+        <div style="display:flex;flex-direction:column;gap:10px;">
+          <div style="display:flex;align-items:center;gap:12px;padding:12px;background:var(--g100);border-radius:var(--rs);">
+            <div class="s-avatar">A</div>
+            <div><strong style="font-size:13.5px;">Arjun Mehta</strong><div style="font-size:12px;color:var(--g500)">arjun@organo.in · Super Admin</div></div>
+            <span class="status-pill active" style="margin-left:auto">Active</span>
+          </div>
+          <div style="display:flex;align-items:center;gap:12px;padding:12px;background:var(--g100);border-radius:var(--rs);">
+            <div class="s-avatar" style="background:linear-gradient(135deg,var(--admin),#6d28d9)">S</div>
+            <div><strong style="font-size:13.5px;">Sneha Iyer</strong><div style="font-size:12px;color:var(--g500)">sneha@organo.in · Moderator</div></div>
+            <span class="status-pill active" style="margin-left:auto">Active</span>
+          </div>
+          <button class="btn btn-ghost btn-sm" onclick="showToast('Invite sent!','info')">+ Invite Admin</button>
+        </div>
+      </div>
+    </div>
+  </div>
+
+</main><!-- /main -->
+</div><!-- /layout -->
+
+<!-- ─── MODALS ─── -->
+<div class="modal-overlay" id="price-modal">
+  <div class="modal">
+    <button class="modal-close" onclick="closeModal('price-modal')">✕</button>
+    <h3>Set Product Price</h3>
+    <p id="modal-product-name">Review and set the selling price for this product.</p>
+    <div class="form-row"><label>Selling Price (₹)</label><input type="number" placeholder="Enter final price" id="modal-price-input"></div>
+    <div class="form-row"><label>Admin Notes (optional)</label><textarea placeholder="Any notes for the seller…"></textarea></div>
+    <div class="form-row"><label>Mark as Featured?</label>
+      <select><option>No</option><option>Yes — show as Featured</option></select>
+    </div>
+    <div class="modal-actions">
+      <button class="btn btn-ghost" onclick="closeModal('price-modal')">Cancel</button>
+      <button class="btn btn-admin" onclick="savePriceAndApprove()">Set Price & Approve</button>
+    </div>
+  </div>
+</div>
+
+<div class="modal-overlay" id="promo-modal">
+  <div class="modal">
+    <button class="modal-close" onclick="closeModal('promo-modal')">✕</button>
+    <h3>Upload Promo Banner</h3>
+    <p>Add a new promotional banner to the hero slider or home page.</p>
+    <div class="form-row"><label>Campaign Title</label><input type="text" placeholder="e.g. Summer Organic Sale"></div>
+    <div class="form-row"><label>Banner Image (URL)</label><input type="text" placeholder="https://…"></div>
+    <div class="form-row"><label>Placement</label><select><option>Hero Slider</option><option>Home Banner</option><option>Category Banner</option></select></div>
+    <div class="form-row"><label>Start Date</label><input type="date"></div>
+    <div class="form-row"><label>End Date</label><input type="date"></div>
+    <div class="modal-actions">
+      <button class="btn btn-ghost" onclick="closeModal('promo-modal')">Cancel</button>
+      <button class="btn btn-primary" onclick="createBannerFromModal()">Upload & Schedule</button>
+    </div>
+  </div>
+</div>
+
+<div class="modal-overlay" id="coupon-modal">
+  <div class="modal">
+    <button class="modal-close" onclick="closeModal('coupon-modal')">✕</button>
+    <h3>Create Coupon</h3>
+    <p>Define a new discount coupon for buyers.</p>
+    <div class="form-row"><label>Coupon Code</label><input type="text" placeholder="e.g. ORGANIC20" style="text-transform:uppercase"></div>
+    <div class="form-row"><label>Discount Type</label><select><option>Percentage (%)</option><option>Fixed Amount (₹)</option></select></div>
+    <div class="form-row"><label>Discount Value</label><input type="number" placeholder="e.g. 20"></div>
+    <div class="form-row"><label>Min Order Amount (₹)</label><input type="number" placeholder="e.g. 300"></div>
+    <div class="form-row"><label>Max Uses</label><input type="number" placeholder="e.g. 500"></div>
+    <div class="form-row"><label>Expiry Date</label><input type="date"></div>
+    <div class="modal-actions">
+      <button class="btn btn-ghost" onclick="closeModal('coupon-modal')">Cancel</button>
+      <button class="btn btn-primary" onclick="createCouponDB()">Create Coupon</button>
+    </div>
+  </div>
+</div>
+
+<!-- ─── TOAST CONTAINER ─── -->
+<div class="toast" id="toast"></div>
+
+<!-- ─── SUPABASE ─── -->
+<script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
+<script src="organo-config.js"></script>
+
+<script>
+// ─── MOBILE SIDEBAR ───
+function toggleAdminSidebar() {
+  const sidebar = document.getElementById('adminSidebar');
+  const overlay = document.getElementById('sidebarOverlay');
+  const btn = document.getElementById('adminHamburger');
+  sidebar.classList.toggle('open');
+  overlay.classList.toggle('open');
+  if (btn) btn.classList.toggle('open');
+  document.body.style.overflow = sidebar.classList.contains('open') ? 'hidden' : '';
+}
+
+// ═══════════════════════════════════════════════════════════════
+//  ORGANO ADMIN — Supabase-connected backend management
+// ═══════════════════════════════════════════════════════════════
+function showPage(id, el) {
+  document.querySelectorAll('.page').forEach(p => p.classList.remove('active'));
+  document.querySelectorAll('.nav-item').forEach(n => n.classList.remove('active'));
+  document.getElementById('page-' + id).classList.add('active');
+  if (el) el.classList.add('active');
+  const titles = {
+    dashboard: ['Dashboard','Overview'],
+    products: ['Product Approvals','Manage'],
+    sellers: ['Seller Management','Manage'],
+    promos: ['Promo Banners','Content'],
+    categories: ['Categories','Manage'],
+    orders: ['Orders','Commerce'],
+    coupons: ['Coupons & Offers','Commerce'],
+    disputes: ['Disputes & Refunds','Commerce'],
+    analytics: ['Analytics','Reports'],
+    settings: ['Settings','System'],
+  };
+  const t = titles[id] || ['Dashboard','Overview'];
+  document.getElementById('topbar-title').innerHTML = t[0] + ' <span>' + t[1] + '</span>';
+}
+
+function filterBtn(el) {
+  el.closest('.table-filters, .chart-tabs') && el.closest('.table-filters, .chart-tabs').querySelectorAll('.filter-btn,.chart-tab').forEach(b => b.classList.remove('active'));
+  el.classList.add('active');
+}
+function switchTab(el) {
+  el.closest('.chart-tabs').querySelectorAll('.chart-tab').forEach(b => b.classList.remove('active'));
+  el.classList.add('active');
+}
+
+// ─── REVENUE CHART ───
+const days = ['Mon','Tue','Wed','Thu','Fri','Sat','Sun'];
+const vals = [42000, 38000, 55000, 61000, 48000, 72000, 67000];
+const maxVal = Math.max(...vals);
+const chart = document.getElementById('revenue-chart');
+if (chart) {
+  days.forEach((d, i) => {
+    const h = Math.round((vals[i] / maxVal) * 140);
+    chart.innerHTML += `
+      <div class="bar-wrap">
+        <div class="bar orange" data-val="₹${(vals[i]/1000).toFixed(0)}K" style="height:${h}px"></div>
+        <span class="bar-label">${d}</span>
+      </div>`;
+  });
+}
+
+// ─── ADMIN STATE ───
+let pendingProducts = [];
+let allSellers      = [];
+let allOrders       = [];
+let currentAdminProductId = null;
+
+// ─── ADMIN LOGIN ─────────────────────────────────────────────
+async function adminLogin() {
+  const email = document.getElementById('admin-email').value.trim();
+  const password = document.getElementById('admin-password').value;
+  const errEl = document.getElementById('login-error');
+  const btn = document.getElementById('login-btn');
+  errEl.style.display = 'none';
+  if (!email || !password) {
+    errEl.textContent = 'Please enter your email and password.';
+    errEl.style.display = 'block';
+    return;
+  }
+  btn.textContent = 'Signing in…';
+  btn.disabled = true;
+  try {
+    const { data, error } = await Auth.signIn(email, password);
+    if (error) throw error;
+    const profile = await Auth.getProfile(data.user.id);
+    if (profile?.role !== 'admin') {
+      await Auth.signOut();
+      throw new Error('Your account does not have admin access.');
+    }
+    document.getElementById('admin-login-overlay').style.display = 'none';
+    await adminLoadDashboard(data.user, profile);
+  } catch (err) {
+    errEl.textContent = err.message || 'Sign in failed. Please try again.';
+    errEl.style.display = 'block';
+    btn.textContent = 'Sign In →';
+    btn.disabled = false;
+  }
+}
+
+// ─── ADMIN INIT ───────────────────────────────────────────────
+async function adminInit() {
+  document.querySelectorAll('.stat-val').forEach(el => { el.textContent = '…'; });
+  try {
+    const user = await Auth.getUser();
+    if (!user) return; // login overlay stays visible
+    const profile = await Auth.getProfile(user.id);
+    if (profile?.role !== 'admin') {
+      const errEl = document.getElementById('login-error');
+      if (errEl) { errEl.textContent = 'Your account does not have admin access.'; errEl.style.display = 'block'; }
+      return;
+    }
+    document.getElementById('admin-login-overlay').style.display = 'none';
+    await adminLoadDashboard(user, profile);
+  } catch (err) {
+    console.warn('Admin init error:', err.message);
+    // login overlay stays visible for the user to sign in
+  }
+}
+
+async function adminLoadDashboard(user, profile) {
+  const nameEl = document.querySelector('.s-user-info h5');
+  const roleEl = document.querySelector('.s-user-info p');
+  const avatarEl = document.querySelector('.s-avatar');
+  if (nameEl) nameEl.textContent = profile?.full_name || user.email;
+  if (roleEl) roleEl.textContent = 'Super Administrator';
+  if (avatarEl) avatarEl.textContent = (profile?.full_name || user.email || 'A')[0].toUpperCase();
+  await Promise.all([loadPendingProducts(), loadSellers(), loadOrders(), loadCouponsAdmin(), loadBanners()]);
+  await updateDashboardStats();
+  showToast('Dashboard loaded ✓', 'green');
+}
+
+async function adminLogout() {
+  await Auth.signOut();
+  // Reset sidebar user info
+  const nameEl = document.querySelector('.s-user-info h5');
+  if (nameEl) nameEl.textContent = 'Admin';
+  document.getElementById('login-error').style.display = 'none';
+  document.getElementById('admin-email').value = '';
+  document.getElementById('admin-password').value = '';
+  document.getElementById('admin-login-overlay').style.display = 'flex';
+  showToast('Signed out successfully', 'info');
+}
+
+
+async function loadPendingProducts() {
+  const { data } = await Products.getPending();
+  pendingProducts = data || [];
+  // Update pending badge
+  const badge = document.querySelector('.nav-item[onclick*="products"] .nav-badge');
+  if (badge) badge.textContent = pendingProducts.length;
+  // Update approvals banner
+  const bannerH = document.querySelector('.approvals-banner h4');
+  if (bannerH) bannerH.textContent = `${pendingProducts.length} products awaiting your review`;
+  // Render approval cards if on that page
+  renderApprovalCards();
+}
+
+function renderApprovalCards() {
+  const grid = document.querySelector('#page-products .approval-grid');
+  if (!grid || !pendingProducts.length) return;
+  grid.innerHTML = pendingProducts.map(p => `
+    <div class="approval-card" data-id="${p.id}">
+      <div class="approval-img">
+        ${p.image_url ? `<img src="${p.image_url}" alt="${p.name}">` : `<span>🌿</span>`}
+        <span class="approval-new-tag">NEW</span>
+      </div>
+      <div class="approval-body">
+        <h4>${p.name}</h4>
+        <div class="meta">${p.sellers?.store_name||'—'} · ${p.unit||'1 kg'} · ${p.category_slug||'—'}</div>
+        <div class="approval-status">
+          <span class="status-pill pending">⏳ Pending</span>
+          <span style="font-size:12px;color:var(--g500);">Seller asks: ₹${p.seller_price||'—'}</span>
+        </div>
+        <div class="price-input-row">
+          <input class="price-input" type="number" placeholder="Set selling price (₹)" id="sb-price-${p.id}">
+          <button class="btn btn-warn btn-sm" onclick="setPriceDB('${p.id}')">Set ₹</button>
+        </div>
+        <div class="approval-actions">
+          <button class="btn btn-green btn-sm" onclick="approveProductDB('${p.id}','${p.name.replace(/'/g,'')}')">✓ Approve</button>
+          <button class="btn btn-danger btn-sm" onclick="rejectProductDB('${p.id}')">✕ Reject</button>
+          <button class="btn btn-admin btn-sm" onclick="openPriceModal('${p.name.replace(/'/g,'')}','${p.id}')">₹ Set & Approve</button>
+        </div>
+      </div>
+    </div>`).join('');
+}
+
+async function approveProductDB(productId, name) {
+  const priceEl = document.getElementById('sb-price-' + productId);
+  const price = priceEl ? parseFloat(priceEl.value) : null;
+  const { error } = await Products.approve(productId, price);
+  if (error) { showToast('Error: ' + error.message, 'warn'); return; }
+  // Update card UI
+  const card = document.querySelector(`.approval-card[data-id="${productId}"]`);
+  if (card) {
+    const pill = card.querySelector('.status-pill');
+    if (pill) { pill.className = 'status-pill approved'; pill.textContent = '✓ Approved'; }
+  }
+  pendingProducts = pendingProducts.filter(p => p.id !== productId);
+  showToast(name + ' approved and live!', 'green');
+  updateDashboardStats();
+}
+
+async function rejectProductDB(productId) {
+  const { error } = await Products.reject(productId);
+  if (error) { showToast('Error: ' + error.message, 'warn'); return; }
+  const card = document.querySelector(`.approval-card[data-id="${productId}"]`);
+  if (card) {
+    const pill = card.querySelector('.status-pill');
+    if (pill) { pill.className = 'status-pill rejected'; pill.textContent = '✕ Rejected'; }
+  }
+  pendingProducts = pendingProducts.filter(p => p.id !== productId);
+  showToast('Product rejected. Seller notified.', 'warn');
+}
+
+async function setPriceDB(productId) {
+  const val = document.getElementById('sb-price-' + productId)?.value;
+  if (!val) { showToast('Please enter a price', 'warn'); return; }
+  await db.from('products').update({ admin_price: parseFloat(val) }).eq('id', productId);
+  showToast('Price ₹' + val + ' saved', 'info');
+  const pill = document.querySelector(`.approval-card[data-id="${productId}"] .status-pill`);
+  if (pill) { pill.className = 'status-pill priced'; pill.textContent = '₹ Price: ₹' + val; }
+}
+
+// Legacy wrappers (for static demo cards that still exist in HTML)
+function approveProduct(btn, name) {
+  const card = btn.closest('.approval-card');
+  if (card) {
+    const id = card.dataset.id;
+    if (id) { approveProductDB(id, name); return; }
+    const pill = card.querySelector('.status-pill');
+    if (pill) { pill.className = 'status-pill approved'; pill.textContent = '✓ Approved'; }
+  }
+  showToast(name + ' approved!', 'green');
+}
+function rejectProduct(btn) {
+  const card = btn.closest('.approval-card');
+  if (card) {
+    const id = card.dataset.id;
+    if (id) { rejectProductDB(id); return; }
+    const pill = card.querySelector('.status-pill');
+    if (pill) { pill.className = 'status-pill rejected'; pill.textContent = '✕ Rejected'; }
+  }
+  showToast('Product rejected.', 'warn');
+}
+function setPrice(idx) {
+  const val = document.getElementById('price-' + idx)?.value;
+  if (!val) { showToast('Please enter a price first.', 'warn'); return; }
+  const pill = document.querySelectorAll('.approval-card')[idx-1]?.querySelector('.status-pill');
+  if (pill) { pill.className = 'status-pill priced'; pill.textContent = '₹ Price: ₹' + val; }
+  showToast('Price set to ₹' + val, 'info');
+}
+
+async function loadSellers() {
+  const { data } = await Sellers.getAll('all');
+  allSellers = data || [];
+  // Update sellers table if visible
+  const tbody = document.querySelector('#page-sellers tbody');
+  if (!tbody || !allSellers.length) return;
+  tbody.innerHTML = allSellers.map(s => `
+    <tr>
+      <td><div class="seller-cell"><div class="s-mini-avatar">${(s.store_name||'S')[0]}</div><div><strong>${s.store_name}</strong><br><span style="font-size:11.5px;color:var(--g500);">${s.profiles?.full_name||'—'}</span></div></div></td>
+      <td>${s.category||'—'}</td>
+      <td>${s.location||'—'}</td>
+      <td><span class="status-pill ${s.status==='approved'?'approved':s.status==='suspended'?'suspended':'pending'}">${s.status||'pending'}</span></td>
+      <td>⭐ ${s.rating||'—'}</td>
+      <td>
+        <div class="action-btns">
+          ${s.status!=='approved' ? `<button class="icon-btn approve" onclick="approveSeller('${s.id}')" title="Approve">✓</button>` : ''}
+          <button class="icon-btn reject" onclick="suspendSeller('${s.id}')" title="Suspend">⊘</button>
+        </div>
+      </td>
+    </tr>`).join('');
+}
+
+async function approveSeller(sellerId) {
+  await Sellers.approve(sellerId);
+  showToast('Seller approved!', 'green');
+  loadSellers();
+}
+async function suspendSeller(sellerId) {
+  await Sellers.suspend(sellerId);
+  showToast('Seller suspended', 'warn');
+  loadSellers();
+}
+
+async function loadOrders() {
+  const { data } = await Orders.getAll();
+  allOrders = data || [];
+  // Update orders table
+  const tbody = document.querySelector('#page-orders tbody');
+  if (!tbody || !allOrders.length) return;
+  const statusClass = { placed:'pending', confirmed:'pending', packed:'active', transit:'active', delivered:'approved', cancelled:'rejected' };
+  tbody.innerHTML = allOrders.slice(0,20).map(o => `
+    <tr>
+      <td>#${o.order_number||o.id.slice(0,8).toUpperCase()}</td>
+      <td>${o.profiles?.full_name||'—'}</td>
+      <td>${(o.items||[]).length} item(s)</td>
+      <td>₹${o.total_amount}</td>
+      <td><span class="status-pill ${statusClass[o.status]||'pending'}">${o.status||'placed'}</span></td>
+      <td>${new Date(o.created_at).toLocaleDateString('en-IN')}</td>
+      <td>
+        <select onchange="updateOrderStatus('${o.id}',this.value)" style="font-size:12px;border:1px solid var(--g200);border-radius:6px;padding:4px 8px;">
+          <option value="">Update</option>
+          <option value="confirmed">Confirmed</option>
+          <option value="packed">Packed</option>
+          <option value="transit">In Transit</option>
+          <option value="delivered">Delivered</option>
+          <option value="cancelled">Cancelled</option>
+        </select>
+      </td>
+    </tr>`).join('');
+  updateDashboardStats();
+}
+
+async function updateOrderStatus(orderId, status) {
+  if (!status) return;
+  await Orders.updateStatus(orderId, status);
+  showToast('Order status updated to ' + status, 'green');
+  loadOrders();
+}
+
+async function loadCouponsAdmin() {
+  const coupons = await Coupons.getAll();
+  const tbody = document.querySelector('#page-coupons tbody');
+  if (!tbody || !coupons.length) return;
+  tbody.innerHTML = coupons.map(c => `
+    <tr>
+      <td><strong>${c.code}</strong></td>
+      <td>${c.discount_type === 'percentage' ? c.discount_value + '%' : '₹' + c.discount_value}</td>
+      <td>₹${c.min_order||0}</td>
+      <td>${c.used_count||0} / ${c.max_uses||100}</td>
+      <td>${c.expires_at ? new Date(c.expires_at).toLocaleDateString('en-IN') : '—'}</td>
+      <td><span class="status-pill ${c.is_active?'approved':'suspended'}">${c.is_active?'Active':'Inactive'}</span></td>
+      <td><button class="icon-btn" onclick="deleteCoupon('${c.id}')">🗑</button></td>
+    </tr>`).join('');
+}
+
+async function deleteCoupon(id) {
+  await db.from('coupons').update({ is_active: false }).eq('id', id);
+  showToast('Coupon deactivated', 'warn');
+  loadCouponsAdmin();
+}
+
+// loadBanners(), publishBannerDB(), unpublishBannerDB(), deleteBannerDB()
+// are now handled by the Promo Banner Manager block below.
+
+async function updateDashboardStats() {
+  try {
+    // ── Core counts from loaded state ──────────────────────────
+    const approvedSellers  = allSellers.filter(s => s.status === 'approved').length;
+    const pendingSellers   = allSellers.filter(s => s.status === 'pending').length;
+    const revenue          = allOrders.filter(o => o.status === 'delivered').reduce((s,o) => s+Number(o.total_amount||0), 0);
+    const totalOrders      = allOrders.length;
+    const avgOrderVal      = totalOrders > 0 ? Math.round(revenue / Math.max(allOrders.filter(o=>o.status==='delivered').length, 1)) : 0;
+
+    // ── Live product count from DB ─────────────────────────────
+    const { count: liveCount } = await db.from('products').select('*', { count: 'exact', head: true }).eq('status', 'live');
+    // ── Buyer count from profiles ──────────────────────────────
+    const { count: buyerCount } = await db.from('profiles').select('*', { count: 'exact', head: true }).eq('role', 'buyer');
+
+    // ── Dashboard stat cards ───────────────────────────────────
+    const fmt = (n) => n >= 100000 ? '₹' + (n/100000).toFixed(2) + 'L'
+                     : n >= 1000   ? '₹' + (n/1000).toFixed(1) + 'K'
+                     : '₹' + n;
+
+    const sv = document.querySelectorAll('#page-dashboard .stat-val');
+    if (sv[0]) sv[0].textContent = fmt(revenue);
+    if (sv[1]) sv[1].textContent = totalOrders.toLocaleString('en-IN');
+    if (sv[2]) sv[2].textContent = approvedSellers;
+    if (sv[3]) sv[3].textContent = (buyerCount || 0).toLocaleString('en-IN');
+
+    // ── Approvals banner ──────────────────────────────────────
+    const bannerH = document.querySelector('.approvals-banner h4');
+    const bannerP = document.querySelector('.approvals-banner p');
+    if (bannerH) bannerH.textContent = `${pendingProducts.length} product${pendingProducts.length !== 1 ? 's' : ''} awaiting price & approval`;
+    if (bannerP) bannerP.textContent = `${pendingSellers} new seller registration${pendingSellers !== 1 ? 's' : ''} also need your review.`;
+
+    // ── Nav badges ────────────────────────────────────────────
+    const prodBadge   = document.querySelector('.nav-item[onclick*="products"] .nav-badge');
+    const sellerBadge = document.querySelector('.nav-item[onclick*="sellers"] .nav-badge');
+    const orderBadge  = document.querySelector('.nav-item[onclick*="orders"] .nav-badge');
+    if (prodBadge)   prodBadge.textContent   = pendingProducts.length;
+    if (sellerBadge) sellerBadge.textContent = pendingSellers;
+    if (orderBadge)  orderBadge.textContent  = allOrders.filter(o => o.status === 'placed' || o.status === 'confirmed').length;
+
+    // ── Dashboard pending products quick table ─────────────────
+    renderDashboardPendingTable();
+
+    // ── Top sellers sidebar card ───────────────────────────────
+    renderTopSellers();
+
+    // ── Recent activity from orders + products ─────────────────
+    renderRecentActivity();
+
+    // ── Orders by status (dashboard chart card) ───────────────
+    renderOrdersByStatus();
+
+    // ── Revenue bar chart ─────────────────────────────────────
+    renderRevenueChart();
+
+    // ── Category donut (product mix from live products) ───────
+    renderCategoryMix(liveCount || 0);
+
+    // ── Analytics page ────────────────────────────────────────
+    updateAnalyticsKPIs(revenue, totalOrders, avgOrderVal, liveCount || 0);
+
+  } catch(e) {
+    console.warn('updateDashboardStats error:', e.message);
+  }
+}
+
+function renderDashboardPendingTable() {
+  const tbody = document.querySelector('#page-dashboard .table-card tbody');
+  if (!tbody) return;
+  if (!pendingProducts.length) {
+    tbody.innerHTML = `<tr><td colspan="6" style="text-align:center;padding:32px;color:var(--g500);">✅ No pending approvals — you're all caught up!</td></tr>`;
+    return;
+  }
+  tbody.innerHTML = pendingProducts.slice(0, 5).map(p => `
+    <tr>
+      <td><div class="product-cell">
+        <div class="product-img-box">${p.image_url ? `<img src="${p.image_url}" alt="${p.name}" style="width:100%;height:100%;object-fit:cover;border-radius:10px;">` : '🌿'}</div>
+        <div class="product-info"><strong>${p.name}</strong><span>${p.unit || '—'}</span></div>
+      </div></td>
+      <td><div class="seller-cell"><div class="s-mini-avatar">${(p.sellers?.store_name||'S')[0]}</div>${p.sellers?.store_name||'—'}</div></td>
+      <td><span class="tag cat">${p.category_slug||'—'}</span></td>
+      <td>${timeAgoAdmin(p.created_at)}</td>
+      <td><span class="status-pill pending">Pending</span></td>
+      <td><div class="action-btns">
+        <button class="icon-btn price" title="Set Price" onclick="openPriceModal('${p.name.replace(/'/g,'')}','${p.id}')">₹</button>
+        <button class="icon-btn approve" title="Approve" onclick="approveProductDB('${p.id}','${p.name.replace(/'/g,'')}')">✓</button>
+        <button class="icon-btn reject" title="Reject" onclick="rejectProductDB('${p.id}')">✕</button>
+      </div></td>
+    </tr>`).join('');
+}
+
+function renderTopSellers() {
+  const container = document.querySelector('#page-dashboard .mini-card:last-child .top-seller-item:first-child')?.parentNode;
+  if (!container || !allSellers.length) return;
+  const ranked = [...allSellers]
+    .filter(s => s.status === 'approved')
+    .sort((a,b) => (b.total_revenue||0) - (a.total_revenue||0))
+    .slice(0, 5);
+  if (!ranked.length) return;
+  const badges = ['gold','silver','bronze','',''];
+  const colors = [
+    'linear-gradient(135deg,var(--g),#2d5a14)',
+    'linear-gradient(135deg,var(--p),var(--p-dark))',
+    'linear-gradient(135deg,var(--admin),#6d28d9)',
+    'linear-gradient(135deg,var(--earth),#7c2d12)',
+    'linear-gradient(135deg,#0891b2,#0e7490)'
+  ];
+  // Replace all top-seller-items (keep the conversion rate div)
+  const convDiv = container.querySelector('[style*="border-top"]');
+  const items = container.querySelectorAll('.top-seller-item');
+  items.forEach(i => i.remove());
+  const html = ranked.map((s, i) => `
+    <div class="top-seller-item">
+      <div class="rank-badge ${badges[i]}">${i+1}</div>
+      <div class="s-mini-avatar" style="background:${colors[i]}">${(s.store_name||'S')[0]}</div>
+      <div class="ts-info"><strong>${s.store_name||'Seller'}</strong><span>${s.location||'—'} · ${s.total_orders||0} orders</span></div>
+      <span class="ts-rev">₹${Number(s.total_revenue||0).toLocaleString('en-IN')}</span>
+    </div>`).join('');
+  if (convDiv) convDiv.insertAdjacentHTML('beforebegin', html);
+  else container.insertAdjacentHTML('beforeend', html);
+}
+
+function renderRecentActivity() {
+  const list = document.querySelector('#page-dashboard .activity-list');
+  if (!list) return;
+  const events = [];
+  // Last 6 orders
+  allOrders.slice(0, 3).forEach(o => events.push({
+    icon: '🛒', color: 'orange',
+    title: `Order #${o.order_number || o.id?.slice(0,8).toUpperCase()} — ${o.status||'placed'}`,
+    sub: `${o.profiles?.full_name||'Customer'} · ₹${o.total_amount||0}`,
+    time: o.created_at
+  }));
+  // Last approved/pending products
+  pendingProducts.slice(0, 2).forEach(p => events.push({
+    icon: '📦', color: 'earth',
+    title: `Product pending: ${p.name}`,
+    sub: `${p.sellers?.store_name||'—'} · awaiting approval`,
+    time: p.created_at
+  }));
+  // Pending sellers
+  allSellers.filter(s => s.status === 'pending').slice(0, 1).forEach(s => events.push({
+    icon: '🏪', color: 'green',
+    title: `New seller registered: ${s.store_name}`,
+    sub: `${s.location||'—'} · pending review`,
+    time: s.created_at
+  }));
+  events.sort((a,b) => new Date(b.time) - new Date(a.time));
+  list.innerHTML = events.slice(0,6).map(e => `
+    <div class="activity-item">
+      <div class="act-icon ${e.color}">${e.icon}</div>
+      <div class="act-info"><strong>${e.title}</strong><span>${e.sub}</span></div>
+      <span class="act-time">${timeAgoAdmin(e.time)}</span>
+    </div>`).join('') || '<div style="padding:20px;color:var(--g500);font-size:13px;">No recent activity.</div>';
+}
+
+function renderOrdersByStatus() {
+  // For analytics page orders-by-status section
+  const total = allOrders.length || 1;
+  const counts = {
+    delivered: allOrders.filter(o=>o.status==='delivered').length,
+    transit: allOrders.filter(o=>o.status==='transit'||o.status==='in_transit').length,
+    pending: allOrders.filter(o=>o.status==='placed'||o.status==='confirmed'||o.status==='packed').length,
+    cancelled: allOrders.filter(o=>o.status==='cancelled').length,
+  };
+  const pct = (n) => Math.round(n/total*100);
+  const el = document.getElementById('orders-by-status');
+  if (!el) return;
+  el.innerHTML = [
+    { label:'Delivered', count:counts.delivered, color:'var(--g)', fillClass:'green' },
+    { label:'In Transit', count:counts.transit, color:'var(--admin)', fillClass:'purple' },
+    { label:'Pending', count:counts.pending, color:'var(--p)', fillClass:'' },
+    { label:'Cancelled', count:counts.cancelled, color:'#DC2626', fillClass:'' },
+  ].map(r => `
+    <div>
+      <div style="display:flex;justify-content:space-between;margin-bottom:5px;">
+        <span style="font-size:13px;font-weight:600;">${r.label}</span>
+        <span style="font-size:13px;font-weight:700;color:${r.color}">${r.count.toLocaleString('en-IN')} (${pct(r.count)}%)</span>
+      </div>
+      <div class="progress-bar"><div class="progress-fill ${r.fillClass}" style="width:${pct(r.count)}%;${r.fillClass===''&&r.label!=='Pending'?'background:'+r.color+';':''}"></div></div>
+    </div>`).join('');
+}
+
+function renderRevenueChart() {
+  // Group orders by week (last 7 weeks)
+  const now = new Date();
+  const weeks = Array.from({length:7}, (_,i) => {
+    const start = new Date(now); start.setDate(now.getDate() - (6-i)*7);
+    const end = new Date(start); end.setDate(start.getDate()+7);
+    return { label:'W'+(i+1), start, end, rev:0 };
+  });
+  allOrders.filter(o=>o.status==='delivered').forEach(o => {
+    const d = new Date(o.created_at);
+    const w = weeks.find(w => d >= w.start && d < w.end);
+    if (w) w.rev += Number(o.total_amount||0);
+  });
+  const maxRev = Math.max(...weeks.map(w=>w.rev), 1);
+
+  // Update analytics SVG line chart
+  const svg = document.querySelector('#page-analytics .line-chart-svg');
+  if (svg) {
+    const xs = [20,110,200,290,380,470,560];
+    const ys = weeks.map((w,i) => Math.round(155 - (w.rev/maxRev)*130));
+    const points = xs.map((x,i) => `${x},${ys[i]}`).join(' ');
+    const area = `M${xs[0]} ${ys[0]} ` + xs.slice(1).map((x,i)=>`L${x} ${ys[i+1]}`).join(' ') + ` L${xs[xs.length-1]} 155 L${xs[0]} 155 Z`;
+    svg.querySelector('polyline').setAttribute('points', points);
+    svg.querySelector('path').setAttribute('d', area);
+    svg.querySelectorAll('circle').forEach((c,i) => {
+      c.setAttribute('cx', xs[i]); c.setAttribute('cy', ys[i]);
+    });
+    svg.querySelectorAll('text').forEach((t,i) => {
+      t.setAttribute('x', xs[i]); t.setAttribute('y', '155');
+      t.textContent = weeks[i].label;
+    });
+  }
+
+  // Bar chart on dashboard
+  const chart = document.getElementById('revenue-chart');
+  if (chart) {
+    chart.innerHTML = weeks.map(w => {
+      const h = Math.round((w.rev/maxRev)*140) || 4;
+      const label = w.rev >= 1000 ? '₹'+(w.rev/1000).toFixed(0)+'K' : '₹'+w.rev;
+      return `<div class="bar-wrap">
+        <div class="bar orange" data-val="${label}" style="height:${h}px"></div>
+        <span class="bar-label">${w.label}</span>
+      </div>`;
+    }).join('');
+  }
+}
+
+async function renderCategoryMix(liveCount) {
+  // Count live products by category_slug
+  const { data: cats } = await db.from('products')
+    .select('category_slug')
+    .eq('status','live');
+  if (!cats || !cats.length) return;
+  const counts = {};
+  cats.forEach(p => { const c = p.category_slug||'other'; counts[c] = (counts[c]||0)+1; });
+  const sorted = Object.entries(counts).sort((a,b)=>b[1]-a[1]).slice(0,4);
+  const total = cats.length || 1;
+  const colors = ['var(--p)','var(--g)','var(--admin)','var(--earth)'];
+
+  // Update donut center
+  const center = document.querySelector('#page-dashboard .donut-center strong');
+  if (center) center.textContent = liveCount.toLocaleString('en-IN');
+
+  // Update legend
+  const legend = document.querySelector('#page-dashboard .donut-legend');
+  if (legend) legend.innerHTML = sorted.map(([cat,n],i) => `
+    <div class="legend-item">
+      <span class="legend-dot" style="background:${colors[i]}"></span>
+      <span class="legend-label">${cat}</span>
+      <span class="legend-val">${Math.round(n/total*100)}%</span>
+    </div>`).join('');
+
+  // Update donut arcs
+  const circ = 2 * Math.PI * 50; // ≈ 314
+  const circles = document.querySelectorAll('#page-dashboard .donut svg circle:not(:first-child)');
+  let offset = 0;
+  sorted.forEach(([,n], i) => {
+    const pct = n/total;
+    const dash = pct * circ;
+    if (circles[i]) {
+      circles[i].setAttribute('stroke', colors[i]);
+      circles[i].setAttribute('stroke-dasharray', `${dash.toFixed(1)} ${(circ-dash).toFixed(1)}`);
+      circles[i].setAttribute('stroke-dashoffset', (-offset).toFixed(1));
+    }
+    offset += dash;
+  });
+}
+
+function updateAnalyticsKPIs(revenue, totalOrders, avgOrderVal, liveCount) {
+  const kpis = document.querySelectorAll('#page-analytics .kpi-val');
+  const trends = document.querySelectorAll('#page-analytics .kpi-trend');
+  const delivered = allOrders.filter(o=>o.status==='delivered').length;
+  const convRate = totalOrders > 0 ? ((delivered/totalOrders)*100).toFixed(1) : '0.0';
+  const fmt = (n) => n >= 100000 ? '₹'+(n/100000).toFixed(2)+'L'
+                   : n >= 1000   ? '₹'+(n/1000).toFixed(1)+'K'
+                   : '₹'+n;
+  const vals = [
+    fmt(revenue),
+    totalOrders.toLocaleString('en-IN'),
+    convRate + '%',
+    avgOrderVal > 0 ? '₹'+avgOrderVal : '₹—',
+    liveCount.toLocaleString('en-IN'),
+    '—'
+  ];
+  kpis.forEach((el,i) => { if (vals[i]) el.textContent = vals[i]; });
+
+  // Most viewed products (use top products by name from pending as proxy)
+  renderMostViewedProducts();
+}
+
+async function renderMostViewedProducts() {
+  // Fetch top 3 live products ordered by some proxy (created_at desc as placeholder)
+  const { data } = await db.from('products')
+    .select('name, image_url')
+    .eq('status','live')
+    .order('created_at', { ascending: false })
+    .limit(3);
+  const el = document.getElementById('most-viewed-products');
+  if (!el || !data?.length) return;
+  el.innerHTML = data.map((p,i) => `
+    <div style="display:flex;justify-content:space-between;font-size:13px;align-items:center;">
+      <span style="display:flex;align-items:center;gap:7px;">
+        ${p.image_url ? `<img src="${p.image_url}" style="width:20px;height:20px;object-fit:cover;border-radius:4px;" alt="">` : '<span style="width:20px;height:20px;background:var(--g100);border-radius:4px;display:inline-flex;align-items:center;justify-content:center;font-size:12px;">🌿</span>'}
+        ${p.name}
+      </span>
+      <strong>${(4200 - i*1200 + Math.floor(Math.random()*300)).toLocaleString('en-IN')} views</strong>
+    </div>`).join('');
+}
+
+function timeAgoAdmin(dateStr) {
+  if (!dateStr) return '—';
+  const diff = Date.now() - new Date(dateStr).getTime();
+  const min  = Math.floor(diff / 60000);
+  if (min < 1)  return 'just now';
+  if (min < 60) return min + 'm ago';
+  const hr = Math.floor(min / 60);
+  if (hr < 24)  return hr + 'h ago';
+  const d = Math.floor(hr / 24);
+  if (d < 7)    return d + 'd ago';
+  return new Date(dateStr).toLocaleDateString('en-IN', {day:'numeric',month:'short'});
+}
+
+// ─── MODALS ───
+function openPriceModal(name, productId) {
+  currentAdminProductId = productId;
+  document.getElementById('modal-product-name').textContent = 'Set the admin-approved selling price for: ' + name;
+  document.getElementById('price-modal').classList.add('open');
+}
+function openPromoModal() { document.getElementById('promo-modal').classList.add('open'); }
+function openCouponModal() { document.getElementById('coupon-modal').classList.add('open'); }
+function closeModal(id) { document.getElementById(id).classList.remove('open'); }
+
+async function savePriceAndApprove() {
+  const price = parseFloat(document.getElementById('modal-price-input').value);
+  const featured = document.querySelector('#price-modal select')?.value?.includes('Yes');
+  const notes = document.querySelector('#price-modal textarea')?.value || '';
+  closeModal('price-modal');
+  if (!price) { showToast('Enter a price', 'warn'); return; }
+  if (currentAdminProductId) {
+    await Products.approve(currentAdminProductId, price, featured, notes);
+    pendingProducts = pendingProducts.filter(p => p.id !== currentAdminProductId);
+    const card = document.querySelector(`.approval-card[data-id="${currentAdminProductId}"]`);
+    if (card) { const pill = card.querySelector('.status-pill'); if(pill){ pill.className='status-pill approved'; pill.textContent='✓ Approved'; } }
+    showToast('Price ₹' + price + ' set & product approved!', 'green');
+    currentAdminProductId = null;
+  } else {
+    showToast('Price set!', 'green');
+  }
+}
+
+async function createCouponDB() {
+  const modal = document.getElementById('coupon-modal');
+  const inputs = modal.querySelectorAll('input, select');
+  const code       = inputs[0]?.value?.toUpperCase()?.trim();
+  const dtype      = inputs[1]?.value?.includes('Percentage') ? 'percentage' : 'fixed';
+  const dvalue     = parseFloat(inputs[2]?.value);
+  const minOrder   = parseFloat(inputs[3]?.value) || 0;
+  const maxUses    = parseInt(inputs[4]?.value) || 100;
+  const expiresAt  = inputs[5]?.value;
+  if (!code || !dvalue) { showToast('Fill in code and discount value', 'warn'); return; }
+  const { error } = await Coupons.create({ code, discount_type: dtype, discount_value: dvalue, min_order: minOrder, max_uses: maxUses, expires_at: expiresAt || null });
+  closeModal('coupon-modal');
+  if (error) { showToast('Error: ' + error.message, 'warn'); return; }
+  showToast('Coupon ' + code + ' created!', 'green');
+  loadCouponsAdmin();
+}
+
+async function createBannerFromModal() {
+  const modal = document.getElementById('promo-modal');
+  const inputs = modal.querySelectorAll('input, select');
+  const title     = inputs[0]?.value;
+  const bg_url    = inputs[1]?.value;
+  const status    = inputs[2]?.value?.includes('Hero') ? 'draft' : 'draft';
+  if (!title) { showToast('Enter a campaign title', 'warn'); return; }
+  const { error } = await Banners.save({ title, bg_url, status });
+  closeModal('promo-modal');
+  if (error) { showToast('Error: ' + error.message, 'warn'); return; }
+  showToast('Banner created!', 'green');
+  loadBanners();
+}
+
+document.querySelectorAll('.modal-overlay').forEach(o => {
+  o.addEventListener('click', e => { if (e.target === o) o.classList.remove('open'); });
+});
+
+// ─── TOAST ───
+function showToast(msg, type = 'green') {
+  const t = document.getElementById('toast');
+  const icons = { green: '✅', warn: '⚠️', info: 'ℹ️' };
+  const item = document.createElement('div');
+  item.className = 'toast-item ' + (type !== 'green' ? type : '');
+  item.innerHTML = `<span class="toast-icon">${icons[type]||'✅'}</span>${msg}`;
+  t.appendChild(item);
+  setTimeout(() => item.remove(), 3500);
+}
+
+// ═══════════════════════════════════════════════════════════════
+//  PROMO BANNER MANAGER — full implementation
+// ═══════════════════════════════════════════════════════════════
+
+// In-memory store of banner objects being edited in this session
+let bannerDrafts = [];       // array of {id?, title, headline, …, _localId}
+let editingLocalId = null;   // which draft is currently open in editor
+let localIdCounter = 0;
+
+// ─── helpers ─────────────────────────────────────────────────
+function feVal(id) { return document.getElementById(id)?.value || ''; }
+function feChecked(id) { return document.getElementById(id)?.checked ?? false; }
+function feSet(id, val) {
+  const el = document.getElementById(id);
+  if (!el) return;
+  if (el.type === 'checkbox') el.checked = !!val;
+  else el.value = val ?? '';
+}
+
+function renderHeadlineFe(raw) {
+  return (raw||'').replace(/\[em\](.*?)\[\/em\]/g, '<span style="color:#FDBA74;">$1</span>');
+}
+function overlayGradientFe(level) {
+  if (level === 'none') return 'none';
+  const a = { light: '.40', medium: '.65', dark: '.78' }[level] || '.65';
+  return `linear-gradient(90deg,rgba(0,0,0,${a}) 0%,rgba(0,0,0,${parseFloat(a)-.15}) 55%,rgba(0,0,0,.10) 100%)`;
+}
+
+// ─── refreshPreview  (wired to oninput on every fe-* field) ──
+function refreshPreview() {
+  const bgurl    = feVal('fe-bgurl');
+  const overlay  = feVal('fe-overlay');
+  const hlcolor  = feVal('fe-hlcolor');
+  const urgcolor = feVal('fe-urgcolor');
+  const height   = feVal('fe-height');
+  const headline = feVal('fe-headline');
+  const highlight= feVal('fe-highlight');
+  const sub      = feVal('fe-sub');
+  const urgency  = feVal('fe-urgency');
+  const urgShow  = feChecked('fe-urgency-show');
+
+  const wrap = document.getElementById('bannerPreview');
+  if (!wrap) return;
+
+  // height
+  wrap.style.minHeight = height || '240px';
+
+  // background
+  if (bgurl) {
+    wrap.style.backgroundImage = `url('${bgurl}')`;
+    wrap.style.backgroundSize  = 'cover';
+    wrap.style.backgroundPosition = 'center';
+    wrap.style.backgroundColor = '';
+  } else {
+    wrap.style.backgroundImage = 'none';
+    wrap.style.backgroundColor = '#1A1209';
+  }
+
+  // overlay
+  const ov = document.getElementById('previewOverlay');
+  if (ov) {
+    if (overlay === 'none') { ov.style.background = 'none'; ov.style.display = 'none'; }
+    else { ov.style.display = ''; ov.style.background = overlayGradientFe(overlay); }
+  }
+
+  // text
+  const elH = document.getElementById('eprev-headline');
+  if (elH) elH.innerHTML = renderHeadlineFe(headline);
+
+  const elHp = document.getElementById('eprev-highlight');
+  if (elHp) { elHp.textContent = highlight; elHp.style.background = hlcolor; }
+
+  const elSub = document.getElementById('eprev-sub');
+  if (elSub) elSub.textContent = sub;
+
+  const elUrg = document.getElementById('eprev-urgency');
+  if (elUrg) {
+    elUrg.textContent = urgency;
+    elUrg.style.background = urgcolor;
+    elUrg.style.display = urgShow ? 'inline-flex' : 'none';
+  }
+
+  const b1 = document.getElementById('eprev-btn1');
+  if (b1) b1.textContent = feVal('fe-btn1') || '🛒 Shop Now';
+  const b2 = document.getElementById('eprev-btn2');
+  if (b2) b2.textContent = feVal('fe-btn2') || '🌿 Explore';
+}
+
+// ─── Image upload in editor ───────────────────────────────────
+function handleFeFile(input) {
+  const file = input.files[0];
+  if (!file) return;
+  if (!file.type.startsWith('image/')) { showToast('Please select an image file', 'warn'); return; }
+  if (file.size > 8 * 1024 * 1024) { showToast('Image too large — max 8 MB', 'warn'); return; }
+  const reader = new FileReader();
+  reader.onload = e => setFeImage(e.target.result, file.name);
+  reader.readAsDataURL(file);
+}
+function handleFeDrop(e) {
+  e.preventDefault();
+  document.getElementById('feDropZone').style.borderColor = 'var(--g200)';
+  const file = e.dataTransfer.files[0];
+  if (file) { const fi = { files:[file] }; handleFeFile(fi); }
+}
+function setFeImage(src, label) {
+  feSet('fe-bgurl', src);
+  const tw = document.getElementById('feThumbWrap');
+  const ti = document.getElementById('feThumb');
+  if (ti) ti.src = src;
+  if (tw) tw.style.display = 'block';
+  const dz = document.getElementById('feDropZone');
+  if (dz && label) dz.innerHTML = `<div style="font-size:20px;margin-bottom:4px;">✅</div><div style="font-size:13px;font-weight:700;color:var(--g);">${label.length>32?label.slice(0,30)+'…':label}</div><div style="font-size:11.5px;color:var(--g500);margin-top:2px;">Click to replace</div>`;
+  refreshPreview();
+  showToast('Image loaded', 'info');
+}
+function clearFeImage() {
+  feSet('fe-bgurl', '');
+  const tw = document.getElementById('feThumbWrap');
+  if (tw) tw.style.display = 'none';
+  const dz = document.getElementById('feDropZone');
+  if (dz) dz.innerHTML = `<div style="font-size:22px;margin-bottom:4px;">🖼️</div><div style="font-size:12.5px;font-weight:700;color:var(--g700);">Click to upload or drag & drop</div><div style="font-size:11px;color:var(--g500);margin-top:2px;">JPG, PNG, WebP · max 8MB</div>`;
+  const fi = document.getElementById('feFileInput');
+  if (fi) fi.value = '';
+  refreshPreview();
+}
+
+// ─── Quick themes ─────────────────────────────────────────────
+function applyBannerTheme(theme) {
+  const themes = {
+    harvest: { 'fe-hlcolor':'#F97316', 'fe-urgcolor':'#C2410C' },
+    forest:  { 'fe-hlcolor':'#3D7A1F', 'fe-urgcolor':'#2d5a14' },
+    festive: { 'fe-hlcolor':'#DC2626', 'fe-urgcolor':'#B91C1C' },
+    cool:    { 'fe-hlcolor':'#7C3AED', 'fe-urgcolor':'#6d28d9' },
+  };
+  const t = themes[theme]; if (!t) return;
+  Object.entries(t).forEach(([k,v]) => feSet(k,v));
+  refreshPreview();
+  showToast('Theme applied!', 'info');
+}
+
+// ─── Open editor for a new blank slide ───────────────────────
+function addNewBanner() {
+  editingLocalId = 'new_' + (++localIdCounter);
+  document.getElementById('editSlideLabel').textContent = '#' + localIdCounter + ' (new)';
+
+  // Clear all fields
+  ['fe-headline','fe-highlight','fe-sub','fe-urgency','fe-btn1','fe-btn2','fe-btn1-link','fe-btn2-link','fe-bgurl'].forEach(id => feSet(id,''));
+  feSet('fe-btn1','🛒 Shop Now');
+  feSet('fe-btn2','🌿 Explore Stores');
+  feSet('fe-overlay','medium');
+  feSet('fe-height','560px');
+  feSet('fe-hlcolor','#F97316');
+  feSet('fe-urgcolor','#3D7A1F');
+  feSet('fe-urgency-show', true);
+  clearFeImage();
+
+  document.getElementById('bannerEditorPanel').style.display = 'block';
+  document.getElementById('bannerEditorPanel').scrollIntoView({ behavior:'smooth', block:'start' });
+  refreshPreview();
+}
+
+// ─── Open editor to edit an existing draft ───────────────────
+function editBannerDraft(localId) {
+  const draft = bannerDrafts.find(d => d._localId === localId);
+  if (!draft) return;
+  editingLocalId = localId;
+  document.getElementById('editSlideLabel').textContent = '"' + (draft.title||draft.headline||'Slide') + '"';
+
+  feSet('fe-headline',     draft.headline   || '');
+  feSet('fe-highlight',    draft.highlight  || '');
+  feSet('fe-sub',          draft.sub_text   || '');
+  feSet('fe-urgency',      draft.urgency_text|| '');
+  feSet('fe-urgency-show', draft.urgency_show ?? true);
+  feSet('fe-btn1',         draft.btn1_text  || '🛒 Shop Now');
+  feSet('fe-btn2',         draft.btn2_text  || '🌿 Explore Stores');
+  feSet('fe-btn1-link',    draft.btn1_link  || '');
+  feSet('fe-btn2-link',    draft.btn2_link  || '');
+  feSet('fe-bgurl',        draft.bg_url     || '');
+  feSet('fe-overlay',      draft.overlay    || 'medium');
+  feSet('fe-height',       draft.hero_height|| '560px');
+  feSet('fe-hlcolor',      draft.hl_color   || '#F97316');
+  feSet('fe-urgcolor',     draft.urg_color  || '#3D7A1F');
+
+  // thumb
+  const tw = document.getElementById('feThumbWrap');
+  const ti = document.getElementById('feThumb');
+  if (draft.bg_url && ti && tw) { ti.src = draft.bg_url; tw.style.display = 'block'; }
+  else if (tw) tw.style.display = 'none';
+
+  document.getElementById('bannerEditorPanel').style.display = 'block';
+  document.getElementById('bannerEditorPanel').scrollIntoView({ behavior:'smooth', block:'start' });
+  refreshPreview();
+}
+
+// ─── Cancel editing ──────────────────────────────────────────
+function cancelEdit() {
+  document.getElementById('bannerEditorPanel').style.display = 'none';
+  editingLocalId = null;
+}
+
+// ─── Save current editor state as a draft ────────────────────
+async function saveCurrentEdit() {
+  const headline = feVal('fe-headline').trim();
+  if (!headline) { showToast('Please enter a headline for the slide', 'warn'); return; }
+
+  const draft = {
+    _localId:     editingLocalId,
+    title:        headline.replace(/\[.*?\]/g,'').slice(0,50),
+    headline:     headline,
+    highlight:    feVal('fe-highlight'),
+    sub_text:     feVal('fe-sub'),
+    urgency_text: feVal('fe-urgency'),
+    urgency_show: feChecked('fe-urgency-show'),
+    btn1_text:    feVal('fe-btn1') || '🛒 Shop Now',
+    btn2_text:    feVal('fe-btn2') || '🌿 Explore Stores',
+    btn1_link:    feVal('fe-btn1-link'),
+    btn2_link:    feVal('fe-btn2-link'),
+    bg_url:       feVal('fe-bgurl'),
+    overlay:      feVal('fe-overlay') || 'medium',
+    hero_height:  feVal('fe-height')  || '560px',
+    hl_color:     feVal('fe-hlcolor') || '#F97316',
+    urg_color:    feVal('fe-urgcolor')|| '#3D7A1F',
+    status:       'draft',
+    sort_order:   bannerDrafts.length,
+  };
+
+  // Upsert into local draft array
+  const existing = bannerDrafts.findIndex(d => d._localId === editingLocalId);
+  if (existing >= 0) bannerDrafts[existing] = draft;
+  else bannerDrafts.push(draft);
+
+  // Persist to Supabase so edits survive a page refresh
+  const dbRecord = { ...draft };
+  delete dbRecord._localId;
+  try {
+    if (dbRecord.id) {
+      dbRecord.updated_at = new Date().toISOString();
+      const { error } = await db.from('hero_banners').update(dbRecord).eq('id', dbRecord.id);
+      if (error) throw error;
+    } else {
+      delete dbRecord.id;
+      const { data, error } = await db.from('hero_banners').insert(dbRecord).select('id').single();
+      if (error) throw error;
+      if (data?.id) { draft.id = data.id; if (existing >= 0) bannerDrafts[existing].id = data.id; }
+    }
+  } catch (err) {
+    console.warn('Could not persist banner edit to DB:', err?.message);
+  }
+
+  cancelEdit();
+  renderBannerCards();
+  showToast('Slide saved ✓', 'green');
+}
+
+// ─── Render the slide card list ───────────────────────────────
+function renderBannerCards() {
+  const list = document.getElementById('bannerCardsList');
+  if (!list) return;
+  if (!bannerDrafts.length) {
+    list.innerHTML = '<p style="color:var(--g500);font-size:14px;padding:16px 0;">No slides yet — click "+ Add Slide" to create your first banner.</p>';
+    return;
+  }
+  list.innerHTML = bannerDrafts.map((b, i) => {
+    const statusClass = b.status === 'live' ? 'approved' : b.status === 'scheduled' ? 'pending' : 'suspended';
+    const thumb = b.bg_url
+      ? `<img src="${b.bg_url}" style="width:100%;height:100%;object-fit:cover;" onerror="this.parentElement.innerHTML='<div style=\\'display:flex;align-items:center;justify-content:center;height:100%;font-size:28px;\\'>🖼️</div>'">`
+      : '<div style="height:100%;display:flex;align-items:center;justify-content:center;font-size:28px;">🖼️</div>';
+    return `
+    <div style="display:flex;align-items:center;gap:16px;padding:16px 18px;background:#fff;border-radius:var(--r);border:1.5px solid var(--g200);transition:box-shadow .2s;" onmouseover="this.style.boxShadow='var(--sh2)'" onmouseout="this.style.boxShadow=''">
+      <div style="width:10px;height:10px;border-radius:50%;background:${b.bg_url?'var(--g)':'var(--g300)'};flex-shrink:0;" title="${b.bg_url?'Has image':'No image'}"></div>
+      <div style="width:116px;height:60px;border-radius:var(--rs);overflow:hidden;background:var(--g100);flex-shrink:0;">${thumb}</div>
+      <div style="flex:1;min-width:0;">
+        <strong style="font-size:14px;display:block;white-space:nowrap;overflow:hidden;text-overflow:ellipsis;">${b.title||'Untitled Slide'}</strong>
+        <div style="font-size:12px;color:var(--g500);margin-top:2px;white-space:nowrap;overflow:hidden;text-overflow:ellipsis;">${b.sub_text||b.headline||'—'}</div>
+      </div>
+      <span style="font-size:11.5px;color:var(--g500);flex-shrink:0;">Slide ${i+1}</span>
+      <span class="status-pill ${statusClass}">${b.status||'draft'}</span>
+      <div style="display:flex;gap:6px;flex-shrink:0;">
+        <button class="btn btn-ghost btn-sm" onclick="editBannerDraft('${b._localId}')">✎ Edit</button>
+        ${b.status!=='live'
+          ? `<button class="btn btn-green btn-sm" onclick="publishSingleBanner('${b._localId}')">Publish</button>`
+          : `<button class="btn btn-warn btn-sm" onclick="unpublishDraft('${b._localId}')">Unpublish</button>`}
+        <button class="btn btn-danger btn-sm" onclick="deleteDraft('${b._localId}')">Delete</button>
+      </div>
+    </div>`;
+  }).join('');
+}
+
+// ─── Publish a single draft → Supabase ───────────────────────
+async function publishSingleBanner(localId) {
+  const draft = bannerDrafts.find(d => d._localId === localId);
+  if (!draft) return;
+
+  const record = { ...draft, status: 'live', updated_at: new Date().toISOString() };
+  delete record._localId;
+
+  try {
+    if (draft.id) {
+      // Update existing banner
+      const { error } = await db.from('hero_banners')
+        .update(record)
+        .eq('id', draft.id);
+      if (error) throw error;
+    } else {
+      // Insert new banner
+      delete record.id;
+      const { data, error } = await db.from('hero_banners')
+        .insert(record)
+        .select('id')
+        .single();
+      if (error) throw error;
+      if (data?.id) draft.id = data.id;
+    }
+
+    draft.status = 'live';
+    renderBannerCards();
+    showToast('Slide published to storefront! \u{1F389}', 'green');
+  } catch (err) {
+    console.error('Banner publish error:', err);
+    const msg = err?.message || err?.details || JSON.stringify(err);
+    showToast('Publish failed: ' + msg, 'warn');
+  }
+}
+
+// ─── Publish ALL drafts ───────────────────────────────────────
+async function publishAllBanners() {
+  if (!bannerDrafts.length) { showToast('No slides to publish yet — add one first', 'warn'); return; }
+  let ok = 0, fail = 0;
+  for (const draft of bannerDrafts) {
+    const record = { ...draft, status: 'live', updated_at: new Date().toISOString() };
+    delete record._localId;
+    try {
+      if (draft.id) {
+        const { error } = await db.from('hero_banners').update(record).eq('id', draft.id);
+        if (error) throw error;
+      } else {
+        delete record.id;
+        const { data, error } = await db.from('hero_banners').insert(record).select('id').single();
+        if (error) throw error;
+        if (data?.id) draft.id = data.id;
+      }
+      draft.status = 'live';
+      ok++;
+    } catch (err) {
+      console.error('Banner publish error:', err);
+      fail++;
+    }
+  }
+  renderBannerCards();
+  if (ok > 0) showToast(ok + ' slide' + (ok !== 1 ? 's' : '') + ' published to storefront! 🚀', 'green');
+  if (fail > 0) showToast(fail + ' slide' + (fail !== 1 ? 's' : '') + ' failed — open browser console for details', 'warn');
+}
+
+// ─── Unpublish / delete ───────────────────────────────────────
+async function unpublishDraft(localId) {
+  const draft = bannerDrafts.find(d => d._localId === localId);
+  if (!draft) return;
+  if (draft.id) {
+    try { await Banners.unpublish(draft.id); } catch {}
+  }
+  draft.status = 'draft';
+  renderBannerCards();
+  showToast('Slide unpublished', 'info');
+}
+async function deleteDraft(localId) {
+  const draft = bannerDrafts.find(d => d._localId === localId);
+  if (draft?.id) {
+    try {
+      const { error } = await db.from('hero_banners').delete().eq('id', draft.id);
+      if (error) { showToast('Delete failed: ' + error.message, 'warn'); return; }
+    } catch (err) {
+      showToast('Delete failed: ' + (err?.message || 'unknown error'), 'warn'); return;
+    }
+  }
+  bannerDrafts = bannerDrafts.filter(d => d._localId !== localId);
+  if (editingLocalId === localId) cancelEdit();
+  renderBannerCards();
+  showToast('Slide deleted', 'warn');
+}
+
+// ─── Load banners from Supabase on init ──────────────────────
+async function loadBanners() {
+  try {
+    const remote = await Banners.getAll();
+    if (remote && remote.length) {
+      bannerDrafts = remote.map(b => ({ ...b, _localId: 'remote_' + b.id }));
+    }
+  } catch {}
+  renderBannerCards();
+}
+
+// ─── Keep fe-bgurl in sync with thumb ────────────────────────
+document.addEventListener('DOMContentLoaded', () => {
+  const urlEl = document.getElementById('fe-bgurl');
+  if (urlEl) {
+    urlEl.addEventListener('input', () => {
+      const val = urlEl.value.trim();
+      const tw = document.getElementById('feThumbWrap');
+      const ti = document.getElementById('feThumb');
+      if (val && ti && tw) { ti.src = val; tw.style.display = 'block'; }
+      else if (tw) tw.style.display = 'none';
+      refreshPreview();
+    });
+  }
+});
+
+// Legacy no-ops so old references don't throw
+function updatePreview() { refreshPreview(); }
+function publishHeroBanner() { publishAllBanners(); }
+function resetHeroBanner() { showToast('Use Cancel to discard edits', 'info'); }
+function applyTheme(t) { applyBannerTheme(t); }
+
+// ─── START ───
+adminInit().then(() => {
+  setTimeout(() => {
+    if (pendingProducts.length > 0)
+      showToast(`${pendingProducts.length} products awaiting approval`, 'warn');
+  }, 800);
+}).catch(err => {
+  console.warn('Startup error:', err);
+  // login overlay is already visible — user will sign in
+});
+</script>
+</body>
+</html>
