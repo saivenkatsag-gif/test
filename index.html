@@ -763,12 +763,12 @@ footer{background:var(--g900);color:#fff;padding:64px 48px 32px;}
   transition:color .15s;
   color:#888;
 }
-/* Active indicator — blue underline at top like the screenshot */
-.mob-bn-item.active{color:#1a73e8;}
+/* Active indicator — orange, underline at TOP of nav bar */
+.mob-bn-item.active{color:var(--p);}
 .mob-bn-item.active::after{
   content:'';
-  position:absolute;bottom:0;left:20%;right:20%;height:3px;
-  background:#1a73e8;border-radius:3px 3px 0 0;
+  position:absolute;top:0;left:15%;right:15%;height:3px;
+  background:var(--p);border-radius:0 0 3px 3px;
 }
 .mob-bn-icon{
   display:flex;align-items:center;justify-content:center;
@@ -783,7 +783,7 @@ footer{background:var(--g900);color:#fff;padding:64px 48px 32px;}
 .mob-bn-badge{
   position:absolute;top:-4px;right:-6px;
   width:16px;height:16px;
-  background:#1a73e8;color:#fff;
+  background:var(--p);color:#fff;
   border-radius:50%;font-size:9px;font-weight:700;
   display:flex;align-items:center;justify-content:center;
   font-family:'DM Sans',sans-serif;
@@ -919,12 +919,29 @@ footer{background:var(--g900);color:#fff;padding:64px 48px 32px;}
   .mob-free-delivery{display:block;}
   /* mob-bottom-nav handled by its own @media block */
 
-  /* Offset for fixed header (approx: loc-row ~70px + tabs ~70px + search ~60px = ~200px) */
-  .main-pages{padding-top:200px;padding-bottom:80px;}
+  /* Offset for fixed header: location row ~64px + search row ~62px = ~126px */
+  .main-pages{padding-top:130px;padding-bottom:80px;}
 
-  /* Hide desktop-only home elements on mobile */
-  .quick-cats{display:none;}
-  .hero{display:none;}
+  /* Show hero and quick-cats on mobile (they appear in reference) */
+  .quick-cats{display:flex;padding:10px 12px;gap:0;overflow-x:auto;scrollbar-width:none;}
+  .quick-cats::-webkit-scrollbar{display:none;}
+  .hero{display:flex;min-height:200px;}
+  .hero-inner{padding:24px 16px;max-width:100%;}
+  .hero-inner h1{font-size:clamp(18px,5.5vw,28px);}
+  .hero-sub-italic{font-size:clamp(13px,4vw,20px);}
+  .hero-sub{font-size:12px;display:none;}
+  .hero-features{display:none !important;}
+  .hero-btns{gap:8px;}
+  .hero-btns .btn{padding:8px 14px;font-size:12px;}
+  .hero-arrow{width:28px;height:28px;font-size:14px;}
+  .hero-dots{bottom:8px;}
+
+  /* Quick cats strip */
+  .quick-cat{padding:6px 14px;flex-shrink:0;}
+  .quick-cat:first-child{padding-left:0;}
+  .quick-cat-img,.quick-cat-img-emoji{width:36px;height:36px;font-size:20px;}
+  .quick-cat-info h5{font-size:11px;}
+  .quick-cat-info p,.quick-cat-info a{display:none;}
 
   /* Trust bar — 2 columns */
   .trust-bar{display:grid;grid-template-columns:1fr 1fr;padding:16px;gap:12px;}
