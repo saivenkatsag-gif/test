@@ -17,7 +17,7 @@
 }
 *{margin:0;padding:0;box-sizing:border-box;}
 html{scroll-behavior:smooth;overflow-x:hidden;}
-body{font-family:'DM Sans',sans-serif;background:var(--cream);color:var(--g900);overflow-x:hidden;position:relative;}
+body{font-family:'DM Sans',sans-serif;background:var(--cream);color:var(--g900);}
 h1,h2,h3,.serif{font-family:'Playfair Display',serif;}
 a{text-decoration:none;color:inherit;}
 img{display:block;max-width:100%;}
@@ -731,7 +731,6 @@ footer{background:var(--g900);color:#fff;padding:64px 48px 32px;}
 }
 @media(max-width:768px){
   .mob-bottom-nav{
-    display:flex !important;
     flex-direction:column !important;
     position:fixed !important;
     bottom:0 !important;
@@ -951,20 +950,21 @@ footer{background:var(--g900);color:#fff;padding:64px 48px 32px;}
   .quick-cat-info h5{font-size:11px;}
   .quick-cat-info p,.quick-cat-info a{display:none;}
 
-  /* Trust bar — 2 columns */
+  /* Trust bar — 2 columns grid */
   .trust-bar{
-    display:grid;
-    grid-template-columns:1fr 1fr;
+    display:grid !important;
+    grid-template-columns:1fr 1fr !important;
     padding:14px 12px;
-    gap:12px;
+    gap:10px;
     width:100%;
     overflow:hidden;
+    justify-items:stretch;
   }
-  .trust-item{gap:10px;min-width:0;overflow:hidden;}
-  .trust-icon{width:36px;height:36px;font-size:16px;flex-shrink:0;}
+  .trust-item{gap:10px;min-width:0;overflow:hidden;width:100%;}
+  .trust-icon{width:34px;height:34px;font-size:15px;flex-shrink:0;}
   .trust-info{min-width:0;overflow:hidden;}
-  .trust-info h5{font-size:12px;white-space:nowrap;overflow:hidden;text-overflow:ellipsis;}
-  .trust-info p{font-size:10.5px;white-space:nowrap;overflow:hidden;text-overflow:ellipsis;}
+  .trust-info h5{font-size:11.5px;overflow:hidden;text-overflow:ellipsis;white-space:nowrap;}
+  .trust-info p{font-size:10px;overflow:hidden;text-overflow:ellipsis;white-space:nowrap;}
 
   /* Sections */
   section{padding:24px 16px;}
@@ -1165,7 +1165,7 @@ footer{background:var(--g900);color:#fff;padding:64px 48px 32px;}
   .hero-inner{padding:28px 16px;}
   .hero-features{display:none !important;}
   .hero-btns .btn{font-size:12.5px;padding:10px 14px;}
-  .trust-bar{grid-template-columns:1fr;gap:10px;padding:14px 16px;}
+  .trust-bar{grid-template-columns:1fr 1fr !important;gap:8px;padding:12px 10px;}
   .trust-item{min-width:unset;width:100%;}
   .product-grid{grid-template-columns:repeat(2,1fr);gap:10px;}
   .prod-img{height:130px;}
