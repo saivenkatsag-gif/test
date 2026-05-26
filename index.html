@@ -727,7 +727,10 @@ footer{background:var(--g900);color:#fff;padding:64px 48px 32px;}
 
 /* ─── MOBILE BOTTOM NAV BAR ─── */
 .mob-bottom-nav{
-  display:none;
+  display:flex; /* always flex; hidden on desktop by media query below */
+}
+@media(min-width:769px){
+  .mob-bottom-nav{ display:none !important; }
 }
 @media(max-width:768px){
   .mob-bottom-nav{
@@ -3278,18 +3281,12 @@ window.addEventListener('scroll',()=>{
 });
 
 // ─── PIN BOTTOM NAV TO BODY ROOT ───
-// Wrapped in DOMContentLoaded so the nav element exists when this runs
+// Runs after DOM is ready; only moves the element — CSS controls display/positioning
 document.addEventListener('DOMContentLoaded', function(){
   const nav = document.getElementById('mobBottomNav');
   if(!nav) return;
-  // Move to direct body child — prevents ancestor stacking context trapping fixed
+  // Move to direct body child so no ancestor creates a new stacking context
   if(nav.parentElement !== document.body) document.body.appendChild(nav);
-  // Only control display — all other positioning is locked in inline style on the element
-  function syncDisplay(){
-    nav.style.display = window.innerWidth <= 768 ? 'flex' : 'none';
-  }
-  syncDisplay();
-  window.addEventListener('resize', syncDisplay);
 });
 
 // ─── HANDLE SUPABASE AUTH REDIRECT (email confirmation, Google OAuth, magic link) ───
@@ -3370,7 +3367,7 @@ async function handleAuthRedirect() {
 </script>
 
 <!-- MOBILE BOTTOM NAV BAR -->
-<nav class="mob-bottom-nav" id="mobBottomNav" aria-label="Bottom navigation" style="position:fixed;bottom:0;left:0;right:0;width:100%;z-index:99999;background:#fff;border-top:1.5px solid #e0e0e0;box-shadow:0 -2px 16px rgba(0,0,0,.13);display:none;flex-direction:column;min-height:60px;">
+<nav class="mob-bottom-nav" id="mobBottomNav" aria-label="Bottom navigation" style="position:fixed;bottom:0;left:0;right:0;width:100%;z-index:99999;background:#fff;border-top:1.5px solid #e0e0e0;box-shadow:0 -2px 16px rgba(0,0,0,.13);display:flex;flex-direction:column;min-height:60px;">
   <div class="mob-bottom-nav-inner">
 
     <!-- Home -->
