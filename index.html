@@ -16,8 +16,8 @@
   --sh: 0 2px 12px rgba(0,0,0,.06); --sh2: 0 8px 40px rgba(0,0,0,.10);
 }
 *{margin:0;padding:0;box-sizing:border-box;}
-html{scroll-behavior:smooth;}
-body{font-family:'DM Sans',sans-serif;background:var(--cream);color:var(--g900);overflow-x:hidden;}
+html{scroll-behavior:smooth;overflow-x:hidden;}
+body{font-family:'DM Sans',sans-serif;background:var(--cream);color:var(--g900);overflow-x:hidden;position:relative;}
 h1,h2,h3,.serif{font-family:'Playfair Display',serif;}
 a{text-decoration:none;color:inherit;}
 img{display:block;max-width:100%;}
@@ -741,13 +741,10 @@ footer{background:var(--g900);color:#fff;padding:64px 48px 32px;}
     z-index:99999;
     background:#fff;
     border-top:1.5px solid #e8e8e8;
-    box-shadow:0 -2px 12px rgba(0,0,0,.08);
-    padding:6px 0 env(safe-area-inset-bottom,6px);
-    /* Nullify any inherited transform/filter that breaks fixed */
-    transform:translateZ(0);
-    -webkit-transform:translateZ(0);
-    backface-visibility:hidden;
-    -webkit-backface-visibility:hidden;
+    box-shadow:0 -2px 16px rgba(0,0,0,.12);
+    padding:6px 0;
+    padding-bottom:max(6px, env(safe-area-inset-bottom));
+    min-height:56px;
   }
 }
 .mob-bottom-nav-inner{
@@ -920,21 +917,22 @@ footer{background:var(--g900);color:#fff;padding:64px 48px 32px;}
   /* mob-bottom-nav handled by its own @media block */
 
   /* Offset for fixed header: location row ~64px + search row ~62px = ~126px */
-  .main-pages{padding-top:130px;padding-bottom:80px;}
+  .main-pages{padding-top:130px;padding-bottom:90px;}
 
   /* Show hero and quick-cats on mobile (they appear in reference) */
   .quick-cats{display:flex;padding:10px 12px;gap:0;overflow-x:auto;scrollbar-width:none;}
   .quick-cats::-webkit-scrollbar{display:none;}
-  .hero{display:flex;min-height:200px;}
-  .hero-inner{padding:24px 16px;max-width:100%;}
-  .hero-inner h1{font-size:clamp(18px,5.5vw,28px);}
-  .hero-sub-italic{font-size:clamp(13px,4vw,20px);}
+  .hero{display:flex;min-height:260px;height:auto;}
+  .hero-bg{background-attachment:scroll !important;}
+  .hero-inner{padding:28px 16px 32px;max-width:100%;width:100%;}
+  .hero-inner h1{font-size:clamp(20px,6vw,30px);}
+  .hero-sub-italic{font-size:clamp(14px,4.5vw,22px);margin-bottom:10px;}
   .hero-sub{font-size:12px;display:none;}
   .hero-features{display:none !important;}
-  .hero-btns{gap:8px;}
-  .hero-btns .btn{padding:8px 14px;font-size:12px;}
-  .hero-arrow{width:28px;height:28px;font-size:14px;}
-  .hero-dots{bottom:8px;}
+  .hero-btns{gap:8px;flex-wrap:wrap;}
+  .hero-btns .btn{padding:9px 16px;font-size:12.5px;}
+  .hero-arrow{width:32px;height:32px;font-size:15px;}
+  .hero-dots{bottom:10px;}
 
   /* Quick cats strip */
   .quick-cat{padding:6px 14px;flex-shrink:0;}
@@ -944,11 +942,19 @@ footer{background:var(--g900);color:#fff;padding:64px 48px 32px;}
   .quick-cat-info p,.quick-cat-info a{display:none;}
 
   /* Trust bar — 2 columns */
-  .trust-bar{display:grid;grid-template-columns:1fr 1fr;padding:16px;gap:12px;}
-  .trust-item{gap:10px;}
-  .trust-icon{width:36px;height:36px;font-size:16px;}
-  .trust-info h5{font-size:12px;}
-  .trust-info p{font-size:11px;}
+  .trust-bar{
+    display:grid;
+    grid-template-columns:1fr 1fr;
+    padding:14px 12px;
+    gap:12px;
+    width:100%;
+    overflow:hidden;
+  }
+  .trust-item{gap:10px;min-width:0;overflow:hidden;}
+  .trust-icon{width:36px;height:36px;font-size:16px;flex-shrink:0;}
+  .trust-info{min-width:0;overflow:hidden;}
+  .trust-info h5{font-size:12px;white-space:nowrap;overflow:hidden;text-overflow:ellipsis;}
+  .trust-info p{font-size:10.5px;white-space:nowrap;overflow:hidden;text-overflow:ellipsis;}
 
   /* Sections */
   section{padding:24px 16px;}
@@ -1141,8 +1147,8 @@ footer{background:var(--g900);color:#fff;padding:64px 48px 32px;}
   .hero-inner{padding:28px 16px;}
   .hero-features{display:none !important;}
   .hero-btns .btn{font-size:12.5px;padding:10px 14px;}
-  .trust-bar{grid-template-columns:1fr;gap:10px;}
-  .trust-item{min-width:unset;}
+  .trust-bar{grid-template-columns:1fr;gap:10px;padding:14px 16px;}
+  .trust-item{min-width:unset;width:100%;}
   .product-grid{grid-template-columns:repeat(2,1fr);gap:10px;}
   .prod-img{height:130px;}
   .cat-grid{grid-template-columns:repeat(2,1fr);gap:10px;}
@@ -3253,17 +3259,14 @@ window.addEventListener('scroll',()=>{
 });
 
 // ─── PIN BOTTOM NAV TO BODY ROOT ───
-// Moves the nav to be a direct child of <body> so no parent
-// transform/filter/opacity can break position:fixed on mobile browsers.
 (function pinBottomNav(){
   const nav = document.getElementById('mobBottomNav');
   if(!nav) return;
-  // Move to end of body if not already a direct child
   if(nav.parentElement !== document.body) {
     document.body.appendChild(nav);
   }
-  // Force inline fixed positioning — highest possible specificity
   function applyFixed(){
+    const isMobile = window.innerWidth <= 768;
     nav.style.cssText = [
       'position:fixed',
       'bottom:0',
@@ -3271,18 +3274,18 @@ window.addEventListener('scroll',()=>{
       'right:0',
       'width:100%',
       'z-index:99999',
-      'transform:translateZ(0)',
-      '-webkit-transform:translateZ(0)',
       'background:#fff',
       'border-top:1.5px solid #e8e8e8',
-      'box-shadow:0 -2px 12px rgba(0,0,0,.08)',
+      'box-shadow:0 -2px 16px rgba(0,0,0,.12)',
       'padding:6px 0',
-      'display:' + (window.innerWidth <= 768 ? 'flex' : 'none'),
+      'min-height:56px',
+      'display:' + (isMobile ? 'flex' : 'none'),
       'flex-direction:column'
     ].join(';');
   }
   applyFixed();
   window.addEventListener('resize', applyFixed);
+  window.addEventListener('load', applyFixed);
 })();
 
 // ─── HANDLE SUPABASE AUTH REDIRECT (email confirmation, Google OAuth, magic link) ───
@@ -3361,99 +3364,6 @@ async function handleAuthRedirect() {
 })();
 
 </script>
-<!-- MOBILE CATEGORY GROUPS (Instamart-style, shown only on mobile) -->
-<div class="mob-cat-section" id="mobCatSection">
-
-  <!-- FREE DELIVERY BANNER -->
-  <div class="mob-free-delivery">🚚 FREE DELIVERY on orders above ₹299</div>
-
-  <!-- Group 1: Fresh & Organic -->
-  <div class="mob-cat-section-title">FRESH &amp; ORGANIC</div>
-  <div class="mob-cat-grid">
-    <div class="mob-cat-item" onclick="browseCategory('veg',this)">
-      <div class="mob-cat-img-wrap">
-        <img src="https://res.cloudinary.com/drfl8crbx/image/upload/v1779628423/Organo/pngtree-3d-fruit-and-vegetable-theme-background-png-image_15967877_qzrhax.png" alt="Vegetables">
-      </div>
-      <span class="mob-cat-name">Fresh Vegetables</span>
-    </div>
-    <div class="mob-cat-item" onclick="browseCategory('fruit',this)">
-      <div class="mob-cat-img-wrap">
-        <img src="https://res.cloudinary.com/drfl8crbx/image/upload/v1779628422/Organo/Frutta-e-verdura-felicita_iraeqf.jpg" alt="Fruits">
-      </div>
-      <span class="mob-cat-name">Fresh Fruits</span>
-    </div>
-    <div class="mob-cat-item" onclick="browseCategory('dairy',this)">
-      <div class="mob-cat-img-wrap">
-        <img src="https://res.cloudinary.com/drfl8crbx/image/upload/v1779628421/Organo/Icon_6-01_stvtzl.jpg" alt="Dairy">
-      </div>
-      <span class="mob-cat-name">Dairy &amp; Ghee</span>
-    </div>
-    <div class="mob-cat-item" onclick="browseCategory('oil',this)">
-      <div class="mob-cat-img-wrap">
-        <span class="mob-cat-emoji">🫙</span>
-      </div>
-      <span class="mob-cat-name">Oils &amp; Ghee</span>
-    </div>
-  </div>
-
-  <!-- Group 2: Pantry & Staples -->
-  <div class="mob-cat-section-title">PANTRY &amp; STAPLES</div>
-  <div class="mob-cat-grid">
-    <div class="mob-cat-item" onclick="browseCategory('grains',this)">
-      <div class="mob-cat-img-wrap">
-        <span class="mob-cat-emoji">🌾</span>
-      </div>
-      <span class="mob-cat-name">Grains &amp; Rice</span>
-    </div>
-    <div class="mob-cat-item" onclick="browseCategory('spices',this)">
-      <div class="mob-cat-img-wrap">
-        <span class="mob-cat-emoji">🌶️</span>
-      </div>
-      <span class="mob-cat-name">Spices &amp; Herbs</span>
-    </div>
-    <div class="mob-cat-item" onclick="browseCategory('biscuits',this)">
-      <div class="mob-cat-img-wrap">
-        <span class="mob-cat-emoji">🍪</span>
-      </div>
-      <span class="mob-cat-name">Snacks &amp; Biscuits</span>
-    </div>
-    <div class="mob-cat-item" onclick="browseCategory('honey',this)">
-      <div class="mob-cat-img-wrap">
-        <span class="mob-cat-emoji">🍯</span>
-      </div>
-      <span class="mob-cat-name">Honey &amp; Spreads</span>
-    </div>
-  </div>
-
-  <!-- Group 3: Health & Wellness -->
-  <div class="mob-cat-section-title">HEALTH &amp; WELLNESS</div>
-  <div class="mob-cat-grid">
-    <div class="mob-cat-item" onclick="browseCategory('babysoap',this)">
-      <div class="mob-cat-img-wrap">
-        <span class="mob-cat-emoji">🧴</span>
-      </div>
-      <span class="mob-cat-name">Natural Soaps</span>
-    </div>
-    <div class="mob-cat-item" onclick="browseCategory('tea',this)">
-      <div class="mob-cat-img-wrap">
-        <span class="mob-cat-emoji">🍵</span>
-      </div>
-      <span class="mob-cat-name">Teas &amp; Infusions</span>
-    </div>
-    <div class="mob-cat-item" onclick="browseCategory('seeds',this)">
-      <div class="mob-cat-img-wrap">
-        <span class="mob-cat-emoji">🥜</span>
-      </div>
-      <span class="mob-cat-name">Nuts &amp; Seeds</span>
-    </div>
-    <div class="mob-cat-item" onclick="browseCategory('supplements',this)">
-      <div class="mob-cat-img-wrap">
-        <span class="mob-cat-emoji">💊</span>
-      </div>
-      <span class="mob-cat-name">Supplements</span>
-    </div>
-  </div>
-</div>
 
 <!-- MOBILE BOTTOM NAV BAR -->
 <nav class="mob-bottom-nav" id="mobBottomNav" aria-label="Bottom navigation">
