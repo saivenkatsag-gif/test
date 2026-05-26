@@ -728,22 +728,67 @@ footer{background:var(--g900);color:#fff;padding:64px 48px 32px;}
 /* ─── MOBILE BOTTOM NAV BAR ─── */
 .mob-bottom-nav{
   display:none;
-  position:fixed;bottom:0;left:0;right:0;z-index:1100;
-  background:#fff;border-top:1px solid var(--g200);
-  padding:8px 0 env(safe-area-inset-bottom, 8px);
+}
+@media(max-width:768px){
+  .mob-bottom-nav{
+    display:flex;
+    flex-direction:column;
+    position:fixed;
+    bottom:0;
+    left:0;
+    right:0;
+    width:100%;
+    z-index:99999;
+    background:#fff;
+    border-top:1.5px solid #e8e8e8;
+    box-shadow:0 -2px 12px rgba(0,0,0,.08);
+    padding:6px 0 env(safe-area-inset-bottom,6px);
+    /* Nullify any inherited transform/filter that breaks fixed */
+    transform:translateZ(0);
+    -webkit-transform:translateZ(0);
+    backface-visibility:hidden;
+    -webkit-backface-visibility:hidden;
+  }
 }
 .mob-bottom-nav-inner{
-  display:flex;align-items:flex-start;justify-content:space-around;
+  display:flex;align-items:stretch;justify-content:space-around;
 }
 .mob-bn-item{
-  display:flex;flex-direction:column;align-items:center;gap:3px;
-  padding:4px 12px;cursor:pointer;border:none;background:transparent;
+  flex:1;
+  display:flex;flex-direction:column;align-items:center;justify-content:center;
+  gap:3px;padding:6px 4px 4px;
+  cursor:pointer;border:none;background:transparent;
   font-family:'DM Sans',sans-serif;
+  position:relative;
+  transition:color .15s;
+  color:#888;
 }
-.mob-bn-icon{font-size:22px;line-height:1;}
-.mob-bn-label{font-size:10.5px;font-weight:600;color:var(--g500);}
-.mob-bn-item.active .mob-bn-label{color:var(--g900);font-weight:800;}
-.mob-bn-item.active .mob-bn-icon{filter:none;}
+/* Active indicator — blue underline at top like the screenshot */
+.mob-bn-item.active{color:#1a73e8;}
+.mob-bn-item.active::after{
+  content:'';
+  position:absolute;bottom:0;left:20%;right:20%;height:3px;
+  background:#1a73e8;border-radius:3px 3px 0 0;
+}
+.mob-bn-icon{
+  display:flex;align-items:center;justify-content:center;
+  width:26px;height:26px;
+  color:inherit;
+  position:relative;
+}
+.mob-bn-icon svg{display:block;stroke:currentColor;}
+.mob-bn-label{font-size:10px;font-weight:600;color:inherit;line-height:1;letter-spacing:.1px;}
+
+/* Cart badge on bottom nav */
+.mob-bn-badge{
+  position:absolute;top:-4px;right:-6px;
+  width:16px;height:16px;
+  background:#1a73e8;color:#fff;
+  border-radius:50%;font-size:9px;font-weight:700;
+  display:flex;align-items:center;justify-content:center;
+  font-family:'DM Sans',sans-serif;
+  border:1.5px solid #fff;
+}
 
 /* ─── FREE DELIVERY BANNER (mobile) ─── */
 .mob-free-delivery{
@@ -872,10 +917,10 @@ footer{background:var(--g900);color:#fff;padding:64px 48px 32px;}
   .mob-header{display:flex;}
   .mob-cat-section{display:block;}
   .mob-free-delivery{display:block;}
-  .mob-bottom-nav{display:flex;}
+  /* mob-bottom-nav handled by its own @media block */
 
   /* Offset for fixed header (approx: loc-row ~70px + tabs ~70px + search ~60px = ~200px) */
-  .main-pages{padding-top:200px;padding-bottom:70px;}
+  .main-pages{padding-top:200px;padding-bottom:80px;}
 
   /* Hide desktop-only home elements on mobile */
   .quick-cats{display:none;}
@@ -2451,6 +2496,17 @@ function addToCart(id) {
 function updateCartUI() {
   const count = cart.reduce((s,c)=>s+c.qty,0);
   document.getElementById('cartCount').textContent = count;
+
+  // Sync mobile bottom nav cart badge
+  const badge = document.getElementById('bnCartBadge');
+  if (badge) {
+    if (count > 0) {
+      badge.textContent = count > 9 ? '9+' : count;
+      badge.style.display = 'flex';
+    } else {
+      badge.style.display = 'none';
+    }
+  }
   const empty = document.getElementById('emptyCart');
   const footer = document.getElementById('cartFooter');
   const items = document.getElementById('cartItems');
@@ -2674,8 +2730,8 @@ function showPage(page, opts = {}) {
   if(page==='stores') renderAll();
   if(page==='dashboard') { renderAll(); loadDashboardStats(); loadAddresses(); loadWallet(); }
 
-  // Sync mobile bottom nav active state
-  const bnMap = {home:'bnHome',browse:'bnShop',stores:'bnStores',dashboard:'bnAccount'};
+  // Sync mobile bottom nav active state (4-tab: Home, Categories, Account, Cart)
+  const bnMap = {home:'bnHome', browse:'bnCats', dashboard:'bnAccount'};
   document.querySelectorAll('.mob-bn-item').forEach(el=>el.classList.remove('active'));
   const activeBtn = document.getElementById(bnMap[page]);
   if(activeBtn) activeBtn.classList.add('active');
@@ -2691,7 +2747,36 @@ function showPage(page, opts = {}) {
   }
 }
 
-// ─── BROWSER BACK/FORWARD ───
+// ─── MOBILE BOTTOM NAV CLICK HANDLER ───
+function mobNavClick(target, el) {
+  // Remove active from all bottom nav items
+  document.querySelectorAll('.mob-bn-item').forEach(b => b.classList.remove('active'));
+  el.classList.add('active');
+
+  if (target === 'cart') {
+    // Cart opens the cart drawer, doesn't navigate pages
+    toggleCart();
+    // Keep current page active highlight
+    const curMap = {home:'bnHome', browse:'bnCats', dashboard:'bnAccount'};
+    const cur = document.getElementById(curMap[currentPage]);
+    if (cur) cur.classList.add('active');
+    el.classList.remove('active'); // cart stays unselected in nav
+    return;
+  }
+  if (target === 'account') {
+    if (currentUser) {
+      showPage('dashboard');
+    } else {
+      openAuth('login');
+      // keep current tab highlighted
+      const curMap = {home:'bnHome', browse:'bnCats', dashboard:'bnAccount'};
+      const cur = document.getElementById(curMap[currentPage]);
+      if (cur) { el.classList.remove('active'); cur.classList.add('active'); }
+    }
+    return;
+  }
+  showPage(target);
+}
 window.addEventListener('popstate', function(e) {
   const state = e.state;
   if (state && state.page) {
@@ -3150,6 +3235,39 @@ window.addEventListener('scroll',()=>{
   document.getElementById('mainNav').classList.toggle('scrolled', window.scrollY>20);
 });
 
+// ─── PIN BOTTOM NAV TO BODY ROOT ───
+// Moves the nav to be a direct child of <body> so no parent
+// transform/filter/opacity can break position:fixed on mobile browsers.
+(function pinBottomNav(){
+  const nav = document.getElementById('mobBottomNav');
+  if(!nav) return;
+  // Move to end of body if not already a direct child
+  if(nav.parentElement !== document.body) {
+    document.body.appendChild(nav);
+  }
+  // Force inline fixed positioning — highest possible specificity
+  function applyFixed(){
+    nav.style.cssText = [
+      'position:fixed',
+      'bottom:0',
+      'left:0',
+      'right:0',
+      'width:100%',
+      'z-index:99999',
+      'transform:translateZ(0)',
+      '-webkit-transform:translateZ(0)',
+      'background:#fff',
+      'border-top:1.5px solid #e8e8e8',
+      'box-shadow:0 -2px 12px rgba(0,0,0,.08)',
+      'padding:6px 0',
+      'display:' + (window.innerWidth <= 768 ? 'flex' : 'none'),
+      'flex-direction:column'
+    ].join(';');
+  }
+  applyFixed();
+  window.addEventListener('resize', applyFixed);
+})();
+
 // ─── HANDLE SUPABASE AUTH REDIRECT (email confirmation, Google OAuth, magic link) ───
 async function handleAuthRedirect() {
   const hash = window.location.hash;
@@ -3321,32 +3439,56 @@ async function handleAuthRedirect() {
 </div>
 
 <!-- MOBILE BOTTOM NAV BAR -->
-<nav class="mob-bottom-nav" id="mobBottomNav">
+<nav class="mob-bottom-nav" id="mobBottomNav" aria-label="Bottom navigation">
   <div class="mob-bottom-nav-inner">
-    <button class="mob-bn-item active" onclick="showPage('home')" id="bnHome">
-      <span class="mob-bn-icon">🏠</span>
+
+    <!-- Home -->
+    <button class="mob-bn-item active" id="bnHome" onclick="mobNavClick('home',this)" aria-label="Home">
+      <span class="mob-bn-icon">
+        <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+          <path d="M3 9.5L12 3l9 6.5V20a1 1 0 0 1-1 1H4a1 1 0 0 1-1-1V9.5z"/>
+          <polyline points="9 21 9 12 15 12 15 21"/>
+        </svg>
+      </span>
       <span class="mob-bn-label">Home</span>
     </button>
-    <button class="mob-bn-item" onclick="showPage('browse')" id="bnShop">
-      <span class="mob-bn-icon">🛒</span>
-      <span class="mob-bn-label">Shop</span>
-    </button>
-    <button class="mob-bn-item" onclick="showPage('browse')" id="bnCats">
-      <span class="mob-bn-icon" style="font-size:20px;">
-        <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><rect x="3" y="3" width="7" height="7" rx="1"/><rect x="14" y="3" width="7" height="7" rx="1"/><rect x="3" y="14" width="7" height="7" rx="1"/><rect x="14" y="14" width="7" height="7" rx="1"/></svg>
+
+    <!-- Categories -->
+    <button class="mob-bn-item" id="bnCats" onclick="mobNavClick('browse',this)" aria-label="Categories">
+      <span class="mob-bn-icon">
+        <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+          <rect x="3" y="3" width="8" height="8" rx="1.5"/>
+          <rect x="13" y="3" width="8" height="8" rx="1.5"/>
+          <rect x="3" y="13" width="8" height="8" rx="1.5"/>
+          <rect x="13" y="13" width="8" height="8" rx="1.5"/>
+        </svg>
       </span>
       <span class="mob-bn-label">Categories</span>
     </button>
-    <button class="mob-bn-item" onclick="showPage('stores')" id="bnStores">
-      <span class="mob-bn-icon">🌿</span>
-      <span class="mob-bn-label">Stores</span>
-    </button>
-    <button class="mob-bn-item" onclick="openAuth('login')" id="bnAccount">
+
+    <!-- Account -->
+    <button class="mob-bn-item" id="bnAccount" onclick="mobNavClick('account',this)" aria-label="Account">
       <span class="mob-bn-icon">
-        <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M20 21v-2a4 4 0 0 0-4-4H8a4 4 0 0 0-4 4v2"/><circle cx="12" cy="7" r="4"/></svg>
+        <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+          <path d="M20 21v-2a4 4 0 0 0-4-4H8a4 4 0 0 0-4 4v2"/>
+          <circle cx="12" cy="7" r="4"/>
+        </svg>
       </span>
       <span class="mob-bn-label">Account</span>
     </button>
+
+    <!-- Cart -->
+    <button class="mob-bn-item" id="bnCart" onclick="mobNavClick('cart',this)" aria-label="Cart">
+      <span class="mob-bn-icon">
+        <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+          <circle cx="9" cy="21" r="1"/><circle cx="20" cy="21" r="1"/>
+          <path d="M1 1h4l2.68 13.39a2 2 0 0 0 2 1.61h9.72a2 2 0 0 0 2-1.61L23 6H6"/>
+        </svg>
+        <span class="mob-bn-badge" id="bnCartBadge" style="display:none">0</span>
+      </span>
+      <span class="mob-bn-label">Cart</span>
+    </button>
+
   </div>
 </nav>
 
