@@ -3278,18 +3278,19 @@ window.addEventListener('scroll',()=>{
 });
 
 // ─── PIN BOTTOM NAV TO BODY ROOT ───
-(function pinBottomNav(){
+// Wrapped in DOMContentLoaded so the nav element exists when this runs
+document.addEventListener('DOMContentLoaded', function(){
   const nav = document.getElementById('mobBottomNav');
   if(!nav) return;
-  // Always move to direct body child — breaks any stacking context from ancestors
+  // Move to direct body child — prevents ancestor stacking context trapping fixed
   if(nav.parentElement !== document.body) document.body.appendChild(nav);
-  // Show/hide only — never override position/bottom/z-index inline styles
+  // Only control display — all other positioning is locked in inline style on the element
   function syncDisplay(){
     nav.style.display = window.innerWidth <= 768 ? 'flex' : 'none';
   }
   syncDisplay();
   window.addEventListener('resize', syncDisplay);
-})();
+});
 
 // ─── HANDLE SUPABASE AUTH REDIRECT (email confirmation, Google OAuth, magic link) ───
 async function handleAuthRedirect() {
