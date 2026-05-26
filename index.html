@@ -1209,6 +1209,267 @@ footer{background:var(--g900);color:#fff;padding:64px 48px 32px;}
   .newsletter-input input{border-radius:8px 8px 0 0;padding:10px 14px;}
   .newsletter-input button{border-radius:0 0 8px 8px;padding:10px;width:100%;}
 }
+
+/* ═══════════════════════════════════════════════════════════════
+   AMAZON-STYLE ACCOUNT PAGE
+   ═══════════════════════════════════════════════════════════════ */
+
+/* Account page wrapper */
+#page-account{background:var(--g100);min-height:100vh;}
+
+/* ── Account Header Banner ── */
+.acc-hero{
+  background:linear-gradient(135deg,var(--g) 0%,#2d5a14 60%,var(--p-dark) 100%);
+  padding:32px 24px 48px;
+  position:relative;overflow:hidden;
+}
+.acc-hero::before{
+  content:'';position:absolute;top:-60px;right:-60px;
+  width:200px;height:200px;border-radius:50%;
+  background:rgba(255,255,255,.06);
+}
+.acc-hero::after{
+  content:'';position:absolute;bottom:-40px;left:40px;
+  width:140px;height:140px;border-radius:50%;
+  background:rgba(255,255,255,.04);
+}
+.acc-hero-inner{position:relative;z-index:1;display:flex;align-items:center;gap:16px;}
+.acc-big-avatar{
+  width:68px;height:68px;border-radius:50%;
+  background:linear-gradient(135deg,var(--p-light),var(--p));
+  border:3px solid rgba(255,255,255,.4);
+  display:flex;align-items:center;justify-content:center;
+  font-size:26px;font-weight:800;color:#fff;
+  font-family:'Playfair Display',serif;
+  flex-shrink:0;
+}
+.acc-hero-info{flex:1;color:#fff;}
+.acc-hero-info h3{font-size:20px;font-weight:800;margin-bottom:2px;line-height:1.2;}
+.acc-hero-info p{font-size:13px;opacity:.75;margin-bottom:8px;}
+.acc-hero-badges{display:flex;gap:8px;flex-wrap:wrap;}
+.acc-hero-badge{
+  display:inline-flex;align-items:center;gap:4px;
+  background:rgba(255,255,255,.18);border:1px solid rgba(255,255,255,.3);
+  color:#fff;border-radius:40px;font-size:11px;font-weight:600;padding:4px 10px;
+}
+.acc-hero-signin{
+  color:#fff;background:rgba(255,255,255,.15);border:1.5px solid rgba(255,255,255,.4);
+  border-radius:10px;padding:12px 20px;font-size:14px;font-weight:700;
+  cursor:pointer;font-family:'DM Sans',sans-serif;transition:background .2s;
+  display:flex;align-items:center;gap:8px;
+}
+.acc-hero-signin:hover{background:rgba(255,255,255,.25);}
+
+/* ── Quick Stats Row ── */
+.acc-stats-row{
+  display:grid;grid-template-columns:repeat(4,1fr);
+  background:#fff;border-bottom:1px solid var(--g200);
+  margin-top:-18px;border-radius:18px 18px 0 0;
+  padding:20px 12px 16px;gap:0;
+  position:relative;z-index:2;
+}
+.acc-stat{
+  display:flex;flex-direction:column;align-items:center;gap:4px;
+  cursor:pointer;padding:8px 4px;border-radius:10px;transition:background .2s;
+}
+.acc-stat:hover{background:var(--g100);}
+.acc-stat-icon{font-size:22px;margin-bottom:2px;}
+.acc-stat-num{font-family:'Playfair Display',serif;font-size:18px;font-weight:900;color:var(--g900);}
+.acc-stat-label{font-size:10px;font-weight:600;color:var(--g500);text-align:center;line-height:1.3;}
+
+/* ── Section Cards ── */
+.acc-section{background:#fff;border-radius:16px;overflow:hidden;margin:12px 14px;box-shadow:0 1px 6px rgba(0,0,0,.05);}
+.acc-section-head{
+  display:flex;align-items:center;justify-content:space-between;
+  padding:16px 18px 12px;border-bottom:1px solid var(--g100);
+}
+.acc-section-title{
+  display:flex;align-items:center;gap:10px;
+  font-size:15px;font-weight:800;color:var(--g900);
+}
+.acc-section-title span{font-size:20px;}
+.acc-section-link{
+  font-size:12px;font-weight:700;color:var(--g);
+  background:var(--g-pale);border-radius:40px;padding:5px 12px;
+  border:none;cursor:pointer;font-family:'DM Sans',sans-serif;transition:background .2s;
+}
+.acc-section-link:hover{background:var(--g-light);}
+
+/* ── Orders in Account ── */
+.acc-orders-list{padding:4px 0;}
+.acc-order-row{
+  display:flex;align-items:center;gap:14px;
+  padding:14px 18px;border-bottom:1px solid var(--g100);cursor:pointer;transition:background .2s;
+}
+.acc-order-row:last-child{border-bottom:none;}
+.acc-order-row:hover{background:var(--g100);}
+.acc-order-img{
+  width:52px;height:52px;border-radius:10px;
+  background:var(--g100);overflow:hidden;flex-shrink:0;
+  display:flex;align-items:center;justify-content:center;font-size:22px;
+}
+.acc-order-img img{width:100%;height:100%;object-fit:cover;display:block;}
+.acc-order-info{flex:1;min-width:0;}
+.acc-order-id{font-size:12px;color:var(--g500);font-weight:500;margin-bottom:2px;}
+.acc-order-name{font-size:14px;font-weight:700;color:var(--g900);
+  white-space:nowrap;overflow:hidden;text-overflow:ellipsis;margin-bottom:4px;}
+.acc-order-meta{display:flex;align-items:center;gap:8px;flex-wrap:wrap;}
+.acc-order-price{font-size:13px;font-weight:700;color:var(--g900);}
+.acc-order-date{font-size:11px;color:var(--g500);}
+.acc-order-right{display:flex;flex-direction:column;align-items:flex-end;gap:6px;flex-shrink:0;}
+.acc-order-status{
+  font-size:11px;font-weight:700;padding:4px 10px;border-radius:40px;white-space:nowrap;
+}
+.acc-os-delivered{background:#d1fae5;color:#065f46;}
+.acc-os-transit{background:#fef3c7;color:#92400e;}
+.acc-os-placed{background:#dbeafe;color:#1e40af;}
+.acc-os-cancelled{background:#fee2e2;color:#991b1b;}
+.acc-order-track{font-size:11px;font-weight:700;color:var(--g);cursor:pointer;background:none;border:none;font-family:'DM Sans',sans-serif;padding:0;}
+
+/* ── Wishlist in Account ── */
+.acc-wish-scroll{
+  display:flex;gap:12px;padding:14px 18px;
+  overflow-x:auto;scrollbar-width:none;
+}
+.acc-wish-scroll::-webkit-scrollbar{display:none;}
+.acc-wish-card{
+  flex-shrink:0;width:120px;border-radius:12px;
+  border:1.5px solid var(--g200);background:var(--white);overflow:hidden;
+  cursor:pointer;transition:transform .2s;
+}
+.acc-wish-card:hover{transform:translateY(-2px);}
+.acc-wish-img{height:90px;background:var(--g100);display:flex;align-items:center;justify-content:center;font-size:36px;overflow:hidden;position:relative;}
+.acc-wish-img img{width:100%;height:100%;object-fit:cover;display:block;}
+.acc-wish-rm{
+  position:absolute;top:4px;right:4px;width:22px;height:22px;border-radius:50%;
+  background:rgba(255,255,255,.9);border:none;display:flex;align-items:center;justify-content:center;
+  font-size:12px;cursor:pointer;
+}
+.acc-wish-body{padding:8px 8px 10px;}
+.acc-wish-name{font-size:11px;font-weight:600;color:var(--g900);line-height:1.3;
+  display:-webkit-box;-webkit-line-clamp:2;-webkit-box-orient:vertical;overflow:hidden;margin-bottom:4px;}
+.acc-wish-price{font-size:12px;font-weight:800;color:var(--g900);}
+.acc-wish-add{
+  width:100%;padding:5px 0;background:var(--g);color:#fff;border:none;
+  font-size:11px;font-weight:700;cursor:pointer;font-family:'DM Sans',sans-serif;transition:background .2s;
+}
+.acc-wish-add:hover{background:#2d5a14;}
+.acc-empty-wish{padding:24px 18px;text-align:center;color:var(--g500);font-size:13px;}
+.acc-empty-wish .big-emoji{font-size:40px;margin-bottom:8px;}
+
+/* ── Addresses in Account ── */
+.acc-addr-list{padding:4px 0;}
+.acc-addr-card{
+  display:flex;align-items:flex-start;gap:14px;
+  padding:14px 18px;border-bottom:1px solid var(--g100);
+}
+.acc-addr-card:last-child{border-bottom:none;}
+.acc-addr-icon{
+  width:40px;height:40px;border-radius:10px;background:var(--p-pale);
+  display:flex;align-items:center;justify-content:center;font-size:20px;flex-shrink:0;
+}
+.acc-addr-info{flex:1;min-width:0;}
+.acc-addr-label{font-size:13px;font-weight:800;color:var(--g900);display:flex;align-items:center;gap:6px;margin-bottom:3px;}
+.acc-addr-default{background:var(--g-light);color:var(--g);font-size:10px;font-weight:700;padding:2px 7px;border-radius:40px;}
+.acc-addr-text{font-size:12.5px;color:var(--g700);line-height:1.5;}
+.acc-addr-actions{display:flex;gap:8px;margin-top:6px;}
+.acc-addr-btn{
+  font-size:11px;font-weight:700;color:var(--g700);background:var(--g100);
+  border:none;border-radius:20px;padding:4px 10px;cursor:pointer;
+  font-family:'DM Sans',sans-serif;transition:background .2s;
+}
+.acc-addr-btn:hover{background:var(--g200);}
+.acc-addr-btn.danger{color:#ef4444;background:#fee2e2;}
+.acc-addr-add{
+  display:flex;align-items:center;gap:10px;
+  padding:14px 18px;color:var(--g);font-size:14px;font-weight:700;
+  cursor:pointer;border:none;background:transparent;font-family:'DM Sans',sans-serif;
+  width:100%;transition:background .2s;
+}
+.acc-addr-add:hover{background:var(--g-pale);}
+
+/* ── Menu Links ── */
+.acc-menu-section{background:#fff;border-radius:16px;overflow:hidden;margin:12px 14px;box-shadow:0 1px 6px rgba(0,0,0,.05);}
+.acc-menu-row{
+  display:flex;align-items:center;gap:14px;
+  padding:15px 18px;border-bottom:1px solid var(--g100);
+  cursor:pointer;transition:background .2s;
+  font-family:'DM Sans',sans-serif;text-align:left;width:100%;background:transparent;border-top:none;border-left:none;border-right:none;
+}
+.acc-menu-row:last-child{border-bottom:none;}
+.acc-menu-row:hover{background:var(--g100);}
+.acc-menu-icon{
+  width:40px;height:40px;border-radius:10px;
+  display:flex;align-items:center;justify-content:center;font-size:20px;flex-shrink:0;
+}
+.acc-menu-text{flex:1;}
+.acc-menu-text h5{font-size:14px;font-weight:700;color:var(--g900);margin-bottom:2px;}
+.acc-menu-text p{font-size:12px;color:var(--g500);}
+.acc-menu-arrow{color:var(--g300);flex-shrink:0;}
+
+/* ── Bottom padding ── */
+.acc-bottom-pad{height:24px;}
+
+/* ── Login prompt ── */
+.acc-login-prompt{
+  background:#fff;border-radius:16px;margin:12px 14px;
+  padding:28px 20px;text-align:center;box-shadow:0 1px 6px rgba(0,0,0,.05);
+}
+.acc-login-prompt .big-emoji{font-size:48px;margin-bottom:12px;}
+.acc-login-prompt h4{font-size:17px;font-weight:800;color:var(--g900);margin-bottom:6px;}
+.acc-login-prompt p{font-size:13px;color:var(--g500);margin-bottom:20px;}
+.acc-login-btns{display:flex;gap:10px;justify-content:center;}
+
+/* ── Coupons ── */
+.acc-coupon-scroll{display:flex;gap:12px;padding:14px 18px;overflow-x:auto;scrollbar-width:none;}
+.acc-coupon-scroll::-webkit-scrollbar{display:none;}
+.acc-coupon-chip{
+  flex-shrink:0;border:1.5px dashed var(--p-light);border-radius:12px;
+  background:var(--p-pale);padding:12px 16px;min-width:140px;
+}
+.acc-coupon-code{font-family:'Playfair Display',serif;font-size:18px;font-weight:900;color:var(--p);margin-bottom:4px;}
+.acc-coupon-desc{font-size:11px;color:var(--p-dark);font-weight:600;}
+.acc-coupon-exp{font-size:10px;color:var(--g500);margin-top:4px;}
+
+/* ── Order track modal ── */
+.acc-track-modal{
+  position:fixed;bottom:0;left:0;right:0;z-index:1300;
+  background:#fff;border-radius:20px 20px 0 0;
+  padding:24px 20px 40px;
+  transform:translateY(100%);transition:transform .35s cubic-bezier(.4,0,.2,1);
+  max-height:80vh;overflow-y:auto;
+}
+.acc-track-modal.open{transform:translateY(0);}
+.acc-track-overlay{
+  position:fixed;inset:0;background:rgba(0,0,0,.45);z-index:1299;
+  opacity:0;pointer-events:none;transition:opacity .3s;
+}
+.acc-track-overlay.open{opacity:1;pointer-events:all;}
+.acc-track-head{display:flex;align-items:center;justify-content:space-between;margin-bottom:20px;}
+.acc-track-head h4{font-size:18px;font-weight:800;}
+.acc-track-steps{display:flex;flex-direction:column;gap:0;position:relative;}
+.acc-track-steps::before{
+  content:'';position:absolute;left:19px;top:16px;bottom:16px;
+  width:2px;background:var(--g200);z-index:0;
+}
+.acc-track-step{
+  display:flex;align-items:flex-start;gap:14px;padding:12px 0;position:relative;z-index:1;
+}
+.acc-ts-dot{
+  width:36px;height:36px;border-radius:50%;border:2px solid var(--g200);
+  background:#fff;display:flex;align-items:center;justify-content:center;
+  font-size:16px;flex-shrink:0;
+}
+.acc-ts-dot.done{background:var(--g);border-color:var(--g);}
+.acc-ts-dot.active{background:var(--p);border-color:var(--p);box-shadow:0 0 0 4px var(--p-pale);}
+.acc-ts-info h5{font-size:14px;font-weight:700;color:var(--g900);margin-bottom:2px;}
+.acc-ts-info p{font-size:12px;color:var(--g500);}
+
+@media(max-width:768px){
+  .acc-stats-row{gap:0;padding:18px 8px 14px;}
+  .acc-stat-num{font-size:16px;}
+  .acc-stat-label{font-size:9.5px;}
+}
 </style>
 </head>
 <body>
@@ -1247,7 +1508,7 @@ footer{background:var(--g900);color:#fff;padding:64px 48px 32px;}
     <span></span><span></span><span></span>
   </button>
   <div class="nav-actions">
-    <button class="nav-account" onclick="openAuth('login')">
+    <button class="nav-account" onclick="showPage('account')">
       <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M20 21v-2a4 4 0 0 0-4-4H8a4 4 0 0 0-4 4v2"/><circle cx="12" cy="7" r="4"/></svg>
       My Account
     </button>
@@ -1271,7 +1532,7 @@ footer{background:var(--g900);color:#fff;padding:64px 48px 32px;}
       <div class="mob-loc-addr">Farm-fresh organic goodness, delivered</div>
     </div>
     <div class="mob-header-right">
-      <button class="mob-avatar" onclick="openAuth('login')" aria-label="Account">
+      <button class="mob-avatar" onclick="mobNavClick('account',document.getElementById('bnAccount'))" aria-label="Account">
         <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M20 21v-2a4 4 0 0 0-4-4H8a4 4 0 0 0-4 4v2"/><circle cx="12" cy="7" r="4"/></svg>
       </button>
     </div>
@@ -1831,6 +2092,146 @@ footer{background:var(--g900);color:#fff;padding:64px 48px 32px;}
     </div>
   </div>
 
+  <!-- ACCOUNT PAGE (Amazon-style, mobile-first) -->
+  <div class="page-section" id="page-account">
+
+    <!-- Hero Banner with user info -->
+    <div class="acc-hero" id="accHero">
+      <div class="acc-hero-inner" id="accHeroInner">
+        <!-- Populated by JS -->
+      </div>
+    </div>
+
+    <!-- Quick Stats -->
+    <div class="acc-stats-row" id="accStatsRow">
+      <div class="acc-stat" onclick="accGoSection('orders')">
+        <div class="acc-stat-icon">📦</div>
+        <div class="acc-stat-num" id="accStatOrders">—</div>
+        <div class="acc-stat-label">Orders</div>
+      </div>
+      <div class="acc-stat" onclick="accGoSection('wishlist')">
+        <div class="acc-stat-icon">❤️</div>
+        <div class="acc-stat-num" id="accStatWishlist">0</div>
+        <div class="acc-stat-label">Wishlist</div>
+      </div>
+      <div class="acc-stat" onclick="accGoSection('coupons')">
+        <div class="acc-stat-icon">🎟</div>
+        <div class="acc-stat-num" id="accStatCoupons">0</div>
+        <div class="acc-stat-label">Coupons</div>
+      </div>
+      <div class="acc-stat" onclick="accGoSection('wallet')">
+        <div class="acc-stat-icon">💰</div>
+        <div class="acc-stat-num" id="accStatWallet">₹0</div>
+        <div class="acc-stat-label">Wallet</div>
+      </div>
+    </div>
+
+    <!-- Sign-in prompt (shown when logged out) -->
+    <div class="acc-login-prompt" id="accLoginPrompt" style="display:none;">
+      <div class="big-emoji">🛍️</div>
+      <h4>Sign in to your account</h4>
+      <p>View orders, manage addresses, save favourites and more</p>
+      <div class="acc-login-btns">
+        <button class="btn btn-primary" onclick="openAuth('login')" style="padding:11px 28px;">Sign In</button>
+        <button class="btn btn-ghost" onclick="openAuth('signup')" style="padding:11px 28px;">Register</button>
+      </div>
+    </div>
+
+    <!-- Recent Orders -->
+    <div class="acc-section" id="accOrdersSection">
+      <div class="acc-section-head">
+        <div class="acc-section-title"><span>📦</span> My Orders</div>
+        <button class="acc-section-link" onclick="showPage('dashboard');switchDash('orders',document.querySelector('[onclick*=\'orders\']'))">View All</button>
+      </div>
+      <div class="acc-orders-list" id="accOrdersList">
+        <div style="padding:20px 18px;color:var(--g500);font-size:13px;">Loading orders…</div>
+      </div>
+    </div>
+
+    <!-- Wishlist -->
+    <div class="acc-section" id="accWishlistSection">
+      <div class="acc-section-head">
+        <div class="acc-section-title"><span>❤️</span> Wishlist</div>
+        <button class="acc-section-link" onclick="showPage('dashboard');switchDash('wishlist',document.querySelector('[onclick*=\'wishlist\']'))">View All</button>
+      </div>
+      <div id="accWishlistContent">
+        <div class="acc-empty-wish">
+          <div class="big-emoji">💚</div>
+          <p>No items saved yet</p>
+        </div>
+      </div>
+    </div>
+
+    <!-- Addresses -->
+    <div class="acc-section" id="accAddressesSection">
+      <div class="acc-section-head">
+        <div class="acc-section-title"><span>📍</span> Saved Addresses</div>
+        <button class="acc-section-link" onclick="openAddressModal()">+ Add</button>
+      </div>
+      <div class="acc-addr-list" id="accAddrList">
+        <div style="padding:16px 18px;color:var(--g500);font-size:13px;">Loading addresses…</div>
+      </div>
+    </div>
+
+    <!-- Coupons -->
+    <div class="acc-section" id="accCouponsSection">
+      <div class="acc-section-head">
+        <div class="acc-section-title"><span>🎟</span> My Coupons</div>
+      </div>
+      <div class="acc-coupon-scroll" id="accCouponList">
+        <div style="padding:4px 0;color:var(--g500);font-size:13px;">Loading coupons…</div>
+      </div>
+    </div>
+
+    <!-- Menu Links -->
+    <div class="acc-menu-section">
+      <button class="acc-menu-row" onclick="showPage('dashboard');switchDash('wallet',document.querySelector('[onclick*=\'wallet\']'))">
+        <div class="acc-menu-icon" style="background:#FEF9C3;">💰</div>
+        <div class="acc-menu-text"><h5>Wallet & Balance</h5><p>Add money, transaction history</p></div>
+        <svg class="acc-menu-arrow" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><polyline points="9 18 15 12 9 6"/></svg>
+      </button>
+      <button class="acc-menu-row" onclick="showPage('dashboard');switchDash('notifications',document.querySelector('[onclick*=\'notifications\']'))">
+        <div class="acc-menu-icon" style="background:#DBEAFE;">🔔</div>
+        <div class="acc-menu-text"><h5>Notifications</h5><p>Order updates, offers & more</p></div>
+        <svg class="acc-menu-arrow" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><polyline points="9 18 15 12 9 6"/></svg>
+      </button>
+      <button class="acc-menu-row" onclick="showPage('dashboard')">
+        <div class="acc-menu-icon" style="background:#F0FDF4;">⚙️</div>
+        <div class="acc-menu-text"><h5>Settings & Profile</h5><p>Edit name, email, password</p></div>
+        <svg class="acc-menu-arrow" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><polyline points="9 18 15 12 9 6"/></svg>
+      </button>
+      <button class="acc-menu-row" onclick="showPage('stores')">
+        <div class="acc-menu-icon" style="background:#FFF7ED;">🌿</div>
+        <div class="acc-menu-text"><h5>Organic Stores</h5><p>Browse verified farm stores</p></div>
+        <svg class="acc-menu-arrow" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><polyline points="9 18 15 12 9 6"/></svg>
+      </button>
+      <button class="acc-menu-row" onclick="showPage('dashboard');switchDash('recommendations',document.querySelector('[onclick*=\'recommendations\']'))">
+        <div class="acc-menu-icon" style="background:#FEF3C7;">⭐</div>
+        <div class="acc-menu-text"><h5>Recommendations</h5><p>Products picked for you</p></div>
+        <svg class="acc-menu-arrow" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><polyline points="9 18 15 12 9 6"/></svg>
+      </button>
+      <button class="acc-menu-row" onclick="doLogout()" style="border-bottom:none;">
+        <div class="acc-menu-icon" style="background:#FEE2E2;">🚪</div>
+        <div class="acc-menu-text"><h5 style="color:#ef4444;">Sign Out</h5><p>Log out of your account</p></div>
+        <svg class="acc-menu-arrow" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><polyline points="9 18 15 12 9 6"/></svg>
+      </button>
+    </div>
+
+    <div class="acc-bottom-pad"></div>
+  </div><!-- /page-account -->
+
+  <!-- ORDER TRACK MODAL -->
+  <div class="acc-track-overlay" id="accTrackOverlay" onclick="closeTrackModal()"></div>
+  <div class="acc-track-modal" id="accTrackModal">
+    <div class="acc-track-head">
+      <h4 id="accTrackOrderId">Order Tracking</h4>
+      <button class="close-btn" onclick="closeTrackModal()">
+        <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><line x1="18" y1="6" x2="6" y2="18"/><line x1="6" y1="6" x2="18" y2="18"/></svg>
+      </button>
+    </div>
+    <div class="acc-track-steps" id="accTrackSteps"></div>
+  </div>
+
 </div><!-- /main pages -->
 
 <!-- CART OVERLAY + DRAWER -->
@@ -2231,7 +2632,8 @@ function updateNavForLoggedIn() {
   const statWish = document.getElementById('statWishlist');
   if (statWish) statWish.textContent = wishlist.size;
 
-  // Nav: swap Sign In button for user avatar/name
+  // If account page is currently shown, re-render it
+  if (currentPage === 'account') renderAccountPage();
   const navActions = document.querySelector('.nav-actions');
   if (navActions && !document.getElementById('navUserBtn')) {
     const signInBtn = navActions.querySelector('.btn-ghost');
@@ -2275,7 +2677,7 @@ async function doLogout() {
     const el = document.getElementById(id);
     if (el) el.textContent = '—';
   });
-  showPage('home');
+  showPage('account');
   showToast('👋 Signed out successfully');
   renderAll();
 }
@@ -2766,17 +3168,20 @@ function showPage(page, opts = {}) {
     return;
   }
   document.querySelectorAll('.page-section').forEach(s=>s.classList.remove('active'));
-  document.getElementById('page-'+page).classList.add('active');
+  const pageEl = document.getElementById('page-'+page);
+  if (!pageEl) return;
+  pageEl.classList.add('active');
   currentPage = page;
   window.scrollTo({top:0,behavior:'smooth'});
   const footer = document.getElementById('mainFooter');
-  footer.style.display = page==='dashboard' ? 'none' : 'block';
+  footer.style.display = (page==='dashboard'||page==='account') ? 'none' : 'block';
   if(page==='browse') renderAll(false);
   if(page==='stores') renderAll();
   if(page==='dashboard') { renderAll(); loadDashboardStats(); loadAddresses(); loadWallet(); }
+  if(page==='account') { renderAccountPage(); }
 
   // Sync mobile bottom nav active state (4-tab: Home, Categories, Account, Cart)
-  const bnMap = {home:'bnHome', browse:'bnCats', dashboard:'bnAccount'};
+  const bnMap = {home:'bnHome', browse:'bnCats', dashboard:'bnAccount', account:'bnAccount'};
   document.querySelectorAll('.mob-bn-item').forEach(el=>el.classList.remove('active'));
   const activeBtn = document.getElementById(bnMap[page]);
   if(activeBtn) activeBtn.classList.add('active');
@@ -2809,15 +3214,7 @@ function mobNavClick(target, el) {
     return;
   }
   if (target === 'account') {
-    if (currentUser) {
-      showPage('dashboard');
-    } else {
-      openAuth('login');
-      // keep current tab highlighted
-      const curMap = {home:'bnHome', browse:'bnCats', dashboard:'bnAccount'};
-      const cur = document.getElementById(curMap[currentPage]);
-      if (cur) { el.classList.remove('active'); cur.classList.add('active'); }
-    }
+    showPage('account');
     return;
   }
   showPage(target);
@@ -3354,6 +3751,337 @@ async function handleAuthRedirect() {
     showToast('⚠️ Sign-in error: ' + err.message);
     return false;
   }
+}
+
+// ─── ACCOUNT PAGE (Amazon-style) ─────────────────────────────
+
+async function renderAccountPage() {
+  renderAccHero();
+  renderAccStats();
+  renderAccOrders();
+  renderAccWishlist();
+  renderAccAddresses();
+  renderAccCoupons();
+}
+
+function renderAccHero() {
+  const heroInner = document.getElementById('accHeroInner');
+  if (!heroInner) return;
+  const loginPrompt = document.getElementById('accLoginPrompt');
+
+  if (!currentUser) {
+    heroInner.innerHTML = `
+      <div class="acc-big-avatar">?</div>
+      <div class="acc-hero-info">
+        <h3>Welcome to Organo 🌿</h3>
+        <p>Sign in for a personalised experience</p>
+        <div class="acc-hero-badges">
+          <span class="acc-hero-badge">🌾 Organic</span>
+          <span class="acc-hero-badge">🚚 Fast Delivery</span>
+        </div>
+      </div>`;
+    if (loginPrompt) loginPrompt.style.display = 'block';
+    return;
+  }
+  if (loginPrompt) loginPrompt.style.display = 'none';
+
+  const name    = currentProfile?.full_name || currentUser?.user_metadata?.full_name || currentUser?.email?.split('@')[0] || 'User';
+  const email   = currentUser?.email || '';
+  const initials = name.split(' ').map(w=>w[0]).join('').slice(0,2).toUpperCase();
+  const hour    = new Date().getHours();
+  const greet   = hour < 12 ? 'Good morning' : hour < 17 ? 'Good afternoon' : 'Good evening';
+
+  heroInner.innerHTML = `
+    <div class="acc-big-avatar">${initials}</div>
+    <div class="acc-hero-info">
+      <h3>${greet}, ${name.split(' ')[0]}! 👋</h3>
+      <p>${email}</p>
+      <div class="acc-hero-badges">
+        <span class="acc-hero-badge">🌾 Member</span>
+        <span class="acc-hero-badge">💚 ${wishlist.size} Saved</span>
+      </div>
+    </div>`;
+}
+
+async function renderAccStats() {
+  if (!currentUser) {
+    ['accStatOrders','accStatWishlist','accStatCoupons','accStatWallet'].forEach(id=>{
+      const el = document.getElementById(id);
+      if(el) el.textContent = '—';
+    });
+    return;
+  }
+
+  // Wishlist
+  const statW = document.getElementById('accStatWishlist');
+  if(statW) statW.textContent = wishlist.size;
+
+  try {
+    // Orders count
+    const { data: orders } = await Orders.getByBuyer(currentUser.id);
+    const statO = document.getElementById('accStatOrders');
+    if(statO) statO.textContent = orders?.length ?? 0;
+
+    // Coupons
+    const allCoupons = await Coupons.getAll();
+    const active = allCoupons.filter(c => c.is_active && (!c.expires_at || new Date(c.expires_at) > new Date()));
+    const statC = document.getElementById('accStatCoupons');
+    if(statC) statC.textContent = active.length;
+
+    // Wallet
+    const { data: prof } = await db.from('profiles').select('wallet_balance').eq('id', currentUser.id).single();
+    const statWal = document.getElementById('accStatWallet');
+    if(statWal) statWal.textContent = '₹' + Number(prof?.wallet_balance ?? 0).toFixed(0);
+  } catch(e) { /* ignore */ }
+}
+
+async function renderAccOrders() {
+  const list = document.getElementById('accOrdersList');
+  if (!list) return;
+
+  if (!currentUser) {
+    list.innerHTML = `<div style="padding:20px 18px;color:var(--g500);font-size:13px;">Sign in to view orders</div>`;
+    return;
+  }
+
+  list.innerHTML = `<div style="padding:16px 18px;color:var(--g500);font-size:13px;">Loading…</div>`;
+
+  // Use static fallback for demo
+  const staticOrders = [
+    {id:'ORG-1084',name:'Spinach, Tomatoes, Carrot',date:'May 19, 2026',total:'₹248',status:'delivered',emoji:'🥬',color:'#F0FDF4'},
+    {id:'ORG-1071',name:'A2 Cow Ghee 500ml',date:'May 16, 2026',total:'₹620',status:'transit',emoji:'🫙',color:'#FEF9C3'},
+    {id:'ORG-1065',name:'Foxtail Millet 1kg',date:'May 14, 2026',total:'₹410',status:'delivered',emoji:'🌾',color:'#FEF3C7'},
+    {id:'ORG-1052',name:'Turmeric Powder, Pepper',date:'May 10, 2026',total:'₹180',status:'delivered',emoji:'🌿',color:'#F0FDF4'},
+    {id:'ORG-1041',name:'Organic Strawberries 250g',date:'May 6, 2026',total:'₹320',status:'cancelled',emoji:'🍓',color:'#FFF1F0'},
+  ];
+
+  const statusMap = {
+    delivered:{cls:'acc-os-delivered',label:'✓ Delivered'},
+    transit:{cls:'acc-os-transit',label:'🚛 In Transit'},
+    placed:{cls:'acc-os-placed',label:'🕐 Placed'},
+    cancelled:{cls:'acc-os-cancelled',label:'✗ Cancelled'}
+  };
+
+  let orders = staticOrders;
+  try {
+    const { data } = await Orders.getByBuyer(currentUser.id);
+    if (data && data.length > 0) {
+      orders = data.slice(0,5).map(o => ({
+        id: '#' + (o.order_number || o.id.slice(0,8).toUpperCase()),
+        name: (o.items||[]).map(i=>i.name).join(', ').slice(0,40) || 'Items',
+        date: new Date(o.created_at).toLocaleDateString('en-IN',{day:'numeric',month:'short',year:'numeric'}),
+        total: '₹' + o.total_amount,
+        status: o.status || 'placed',
+        emoji: '📦',
+        color: '#F0FDF4'
+      }));
+    }
+  } catch(e) { /* use static */ }
+
+  list.innerHTML = orders.map(o => {
+    const s = statusMap[o.status] || statusMap.placed;
+    const canTrack = o.status === 'transit' || o.status === 'placed';
+    return `<div class="acc-order-row" onclick="openTrackModal('${o.id}','${o.status}')">
+      <div class="acc-order-img" style="background:${o.color};">${o.emoji}</div>
+      <div class="acc-order-info">
+        <div class="acc-order-id">${o.id}</div>
+        <div class="acc-order-name">${o.name}</div>
+        <div class="acc-order-meta">
+          <span class="acc-order-price">${o.total}</span>
+          <span class="acc-order-date">· ${o.date}</span>
+        </div>
+      </div>
+      <div class="acc-order-right">
+        <span class="acc-order-status ${s.cls}">${s.label}</span>
+        ${canTrack ? `<button class="acc-order-track" onclick="event.stopPropagation();openTrackModal('${o.id}','${o.status}')">Track →</button>` : ''}
+      </div>
+    </div>`;
+  }).join('');
+}
+
+function renderAccWishlist() {
+  const wrap = document.getElementById('accWishlistContent');
+  if (!wrap) return;
+
+  const wished = products.filter(p => wishlist.has(p.id));
+
+  if (!wished.length) {
+    wrap.innerHTML = `<div class="acc-empty-wish"><div class="big-emoji">💚</div><p>No items saved yet.<br>Tap ❤️ on any product to save it.</p></div>`;
+    return;
+  }
+
+  wrap.innerHTML = `<div class="acc-wish-scroll">${
+    wished.map(p => `
+      <div class="acc-wish-card">
+        <div class="acc-wish-img" style="background:${p.color};">
+          <img src="${p.img||''}" alt="${p.name}" onerror="this.style.display='none'">
+          <button class="acc-wish-rm" onclick="event.stopPropagation();toggleWishFromAccount(${p.id},this)" title="Remove">✕</button>
+        </div>
+        <div class="acc-wish-body">
+          <div class="acc-wish-name">${p.name}</div>
+          <div class="acc-wish-price">₹${p.price}</div>
+        </div>
+        <button class="acc-wish-add" onclick="addToCart(${p.id});showToast('Added to cart!')">Add to Cart</button>
+      </div>`
+    ).join('')
+  }</div>`;
+}
+
+async function toggleWishFromAccount(id, btn) {
+  await toggleWish(id, btn);
+  renderAccWishlist();
+  renderAccStats();
+}
+
+async function renderAccAddresses() {
+  const list = document.getElementById('accAddrList');
+  if (!list) return;
+
+  if (!currentUser) {
+    list.innerHTML = `<div style="padding:16px 18px;color:var(--g500);font-size:13px;">Sign in to manage addresses</div>`;
+    return;
+  }
+
+  list.innerHTML = `<div style="padding:14px 18px;color:var(--g500);font-size:13px;">Loading…</div>`;
+
+  try {
+    const { data, error } = await db.from('addresses')
+      .select('*').eq('user_id', currentUser.id)
+      .order('is_default', { ascending: false })
+      .order('created_at', { ascending: true });
+
+    if (error) throw error;
+
+    const labelIcon = {Home:'🏠', Office:'🏢', Other:'📍'};
+
+    let html = (data && data.length > 0)
+      ? data.map(a => `
+        <div class="acc-addr-card">
+          <div class="acc-addr-icon">${labelIcon[a.label]||'📍'}</div>
+          <div class="acc-addr-info">
+            <div class="acc-addr-label">
+              ${a.label}
+              ${a.is_default ? '<span class="acc-addr-default">Default</span>' : ''}
+            </div>
+            <div class="acc-addr-text">${a.line1}${a.line2?', '+a.line2:''}, ${a.city}${a.state?', '+a.state:''} — ${a.pincode}${a.phone?'<br>📞 '+a.phone:''}</div>
+            <div class="acc-addr-actions">
+              <button class="acc-addr-btn" onclick="editAddress(${JSON.stringify(a).split('"').join("'")})">Edit</button>
+              ${!a.is_default ? `<button class="acc-addr-btn" onclick="setDefaultAddress('${a.id}');renderAccAddresses()">Set Default</button>` : ''}
+              <button class="acc-addr-btn danger" onclick="deleteAddress('${a.id}')">Delete</button>
+            </div>
+          </div>
+        </div>`).join('')
+      : `<div style="padding:14px 18px;color:var(--g500);font-size:13px;">No addresses saved yet.</div>`;
+
+    html += `<button class="acc-addr-add" onclick="openAddressModal()">
+      <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><line x1="12" y1="5" x2="12" y2="19"/><line x1="5" y1="12" x2="19" y2="12"/></svg>
+      Add New Address
+    </button>`;
+
+    list.innerHTML = html;
+  } catch(e) {
+    list.innerHTML = `<div style="padding:14px 18px;color:var(--g500);font-size:13px;">No addresses saved yet.</div>
+      <button class="acc-addr-add" onclick="openAddressModal()">
+        <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><line x1="12" y1="5" x2="12" y2="19"/><line x1="5" y1="12" x2="19" y2="12"/></svg>
+        Add New Address
+      </button>`;
+  }
+}
+
+async function renderAccCoupons() {
+  const wrap = document.getElementById('accCouponList');
+  if (!wrap) return;
+
+  try {
+    const allCoupons = await Coupons.getAll();
+    const active = allCoupons.filter(c => c.is_active && (!c.expires_at || new Date(c.expires_at) > new Date()));
+    if (!active.length) {
+      wrap.innerHTML = `<div style="padding:4px 0 10px;color:var(--g500);font-size:13px;">No active coupons right now.</div>`;
+      return;
+    }
+    wrap.innerHTML = active.map(c => `
+      <div class="acc-coupon-chip">
+        <div class="acc-coupon-code">${c.code}</div>
+        <div class="acc-coupon-desc">${c.discount_type==='percentage'?c.discount_value+'% OFF':'₹'+c.discount_value+' OFF'}${c.min_order?' · Min ₹'+c.min_order:''}</div>
+        ${c.expires_at ? `<div class="acc-coupon-exp">Expires ${new Date(c.expires_at).toLocaleDateString('en-IN',{day:'numeric',month:'short'})}</div>` : ''}
+      </div>`).join('');
+    const statC = document.getElementById('accStatCoupons');
+    if(statC) statC.textContent = active.length;
+  } catch(e) {
+    // Show demo coupons
+    wrap.innerHTML = `
+      <div class="acc-coupon-chip">
+        <div class="acc-coupon-code">ORGANIC20</div>
+        <div class="acc-coupon-desc">20% OFF · Min ₹300</div>
+        <div class="acc-coupon-exp">Expires 30 Jun</div>
+      </div>
+      <div class="acc-coupon-chip">
+        <div class="acc-coupon-code">FRESH50</div>
+        <div class="acc-coupon-desc">₹50 OFF · Min ₹500</div>
+        <div class="acc-coupon-exp">Expires 15 Jun</div>
+      </div>
+      <div class="acc-coupon-chip">
+        <div class="acc-coupon-code">FIRSTBUY</div>
+        <div class="acc-coupon-desc">₹100 OFF · First Order</div>
+        <div class="acc-coupon-exp">No expiry</div>
+      </div>`;
+    const statC = document.getElementById('accStatCoupons');
+    if(statC) statC.textContent = 3;
+  }
+}
+
+function accGoSection(section) {
+  const sectionEl = document.getElementById('acc' + section.charAt(0).toUpperCase() + section.slice(1) + 'Section');
+  if (sectionEl) sectionEl.scrollIntoView({ behavior: 'smooth', block: 'start' });
+}
+
+// ─── ORDER TRACK MODAL ──
+const TRACK_STEPS = {
+  placed:    { step:0, steps:['Order Placed','Confirmed','Packed','Out for Delivery','Delivered'] },
+  confirmed: { step:1, steps:['Order Placed','Confirmed','Packed','Out for Delivery','Delivered'] },
+  packed:    { step:2, steps:['Order Placed','Confirmed','Packed','Out for Delivery','Delivered'] },
+  transit:   { step:3, steps:['Order Placed','Confirmed','Packed','Out for Delivery','Delivered'] },
+  delivered: { step:4, steps:['Order Placed','Confirmed','Packed','Out for Delivery','Delivered'] },
+  cancelled: { step:-1, steps:['Order Placed','Cancelled'] },
+};
+const TRACK_DESCS = ['We have received your order.','Order confirmed by the seller.','Your items are being packed.','Package is out for delivery today!','Delivered successfully. Enjoy!'];
+const TRACK_ICONS = ['🛒','✅','📦','🚛','🎉'];
+
+function openTrackModal(orderId, status) {
+  const modal   = document.getElementById('accTrackModal');
+  const overlay = document.getElementById('accTrackOverlay');
+  const idEl    = document.getElementById('accTrackOrderId');
+  const stepsEl = document.getElementById('accTrackSteps');
+
+  if (!modal) return;
+  if (idEl) idEl.textContent = 'Track ' + orderId;
+
+  const info    = TRACK_STEPS[status] || TRACK_STEPS.placed;
+  const current = info.step;
+
+  stepsEl.innerHTML = info.steps.map((label, i) => {
+    let cls = 'acc-ts-dot';
+    if (i < current) cls += ' done';
+    else if (i === current) cls += ' active';
+    const icon = status==='cancelled' ? (i===0?'🛒':'✗') : (TRACK_ICONS[i]||'•');
+    const desc = status==='cancelled' ? (i===0?'Order was placed.':'Order was cancelled.') : (TRACK_DESCS[i]||'');
+    const color = i < current ? '#fff' : (i === current ? '#fff' : '#888');
+    return `<div class="acc-track-step">
+      <div class="${cls}" style="color:${color};">${icon}</div>
+      <div class="acc-ts-info">
+        <h5 style="${i < current ? 'color:var(--g)' : i===current ? 'color:var(--p)' : 'color:var(--g500)'}">${label}</h5>
+        <p>${desc}</p>
+      </div>
+    </div>`;
+  }).join('');
+
+  overlay.classList.add('open');
+  modal.classList.add('open');
+}
+
+function closeTrackModal() {
+  document.getElementById('accTrackModal')?.classList.remove('open');
+  document.getElementById('accTrackOverlay')?.classList.remove('open');
 }
 
 // ─── INIT ───
